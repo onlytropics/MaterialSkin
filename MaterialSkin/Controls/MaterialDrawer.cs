@@ -234,6 +234,7 @@
                 // skip items without image
                 if (String.IsNullOrEmpty(tabPage.ImageKey) || _drawerItemRects == null)
                     continue;
+                if (iconsBrushes.ContainsKey(tabPage.ImageKey)) continue;
 
                 // Image Rect
                 Rectangle destRect = new Rectangle(0, 0, _baseTabControl.ImageList.Images[tabPage.ImageKey].Width, _baseTabControl.ImageList.Images[tabPage.ImageKey].Height);
@@ -285,9 +286,9 @@
                                                      iconRect.Y + iconRect.Height / 2 - _baseTabControl.ImageList.Images[tabPage.ImageKey].Height / 2);
 
                 // add to dictionary
-                iconsBrushes.Add(tabPage.ImageKey, textureBrushGray);
-                iconsSelectedBrushes.Add(tabPage.ImageKey, textureBrushColor);
-                iconsSize.Add(tabPage.ImageKey, new Rectangle(0, 0, iconRect.Width, iconRect.Height));
+                iconsBrushes[tabPage.ImageKey] = textureBrushGray;
+                iconsSelectedBrushes[tabPage.ImageKey] = textureBrushColor;
+                iconsSize[tabPage.ImageKey] = new Rectangle(0, 0, iconRect.Width, iconRect.Height);
             }
         }
 
