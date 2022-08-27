@@ -56,27 +56,7 @@
             }
 
             // create and save font handles for GDI
-            logicalFonts = new Dictionary<string, IntPtr>(18);
-            logicalFonts.Add("H1", createLogicalFont("Roboto Light", 96, NativeTextRenderer.logFontWeight.FW_LIGHT));
-            logicalFonts.Add("H2", createLogicalFont("Roboto Light", 60, NativeTextRenderer.logFontWeight.FW_LIGHT));
-            logicalFonts.Add("H3", createLogicalFont("Roboto", 48, NativeTextRenderer.logFontWeight.FW_REGULAR));
-            logicalFonts.Add("H4", createLogicalFont("Roboto", 34, NativeTextRenderer.logFontWeight.FW_REGULAR));
-            logicalFonts.Add("H5", createLogicalFont("Roboto", 24, NativeTextRenderer.logFontWeight.FW_REGULAR));
-            logicalFonts.Add("H6", createLogicalFont("Roboto Medium", 20, NativeTextRenderer.logFontWeight.FW_MEDIUM));
-            logicalFonts.Add("Subtitle1", createLogicalFont("Roboto", 16, NativeTextRenderer.logFontWeight.FW_REGULAR));
-            logicalFonts.Add("Subtitle2", createLogicalFont("Roboto Medium", 14, NativeTextRenderer.logFontWeight.FW_MEDIUM));
-            logicalFonts.Add("SubtleEmphasis", createLogicalFont("Roboto", 12, NativeTextRenderer.logFontWeight.FW_NORMAL, 1));
-            logicalFonts.Add("Body1", createLogicalFont("Roboto", 16, NativeTextRenderer.logFontWeight.FW_REGULAR));
-            logicalFonts.Add("Body2", createLogicalFont("Roboto", 14, NativeTextRenderer.logFontWeight.FW_REGULAR));
-            logicalFonts.Add("Button", createLogicalFont("Roboto Medium", 14, NativeTextRenderer.logFontWeight.FW_MEDIUM));
-            logicalFonts.Add("Caption", createLogicalFont("Roboto", 12, NativeTextRenderer.logFontWeight.FW_REGULAR));
-            logicalFonts.Add("Overline", createLogicalFont("Roboto", 10, NativeTextRenderer.logFontWeight.FW_REGULAR));
-            // Logical fonts for textbox animation
-            logicalFonts.Add("textBox16", createLogicalFont("Roboto", 16, NativeTextRenderer.logFontWeight.FW_REGULAR));
-            logicalFonts.Add("textBox15", createLogicalFont("Roboto", 15, NativeTextRenderer.logFontWeight.FW_REGULAR));
-            logicalFonts.Add("textBox14", createLogicalFont("Roboto", 14, NativeTextRenderer.logFontWeight.FW_REGULAR));
-            logicalFonts.Add("textBox13", createLogicalFont("Roboto Medium", 13, NativeTextRenderer.logFontWeight.FW_MEDIUM));
-            logicalFonts.Add("textBox12", createLogicalFont("Roboto Medium", 12, NativeTextRenderer.logFontWeight.FW_MEDIUM));
+            logicalFonts = new Dictionary<string, IntPtr>();
         }
 
         // Destructor
@@ -292,53 +272,54 @@
             Overline
         }
 
-        public Font getFontByType(fontType type)
+        public Font getFontByType(fontType type, int dpi = 96)
         {
+            float f = dpi / 96f;
             switch (type)
             {
                 case fontType.H1:
-                    return new Font(RobotoFontFamilies["Roboto_Light"], 96f, FontStyle.Regular, GraphicsUnit.Pixel);
+                    return new Font(RobotoFontFamilies["Roboto_Light"], f*96f, FontStyle.Regular, GraphicsUnit.Pixel);
 
                 case fontType.H2:
-                    return new Font(RobotoFontFamilies["Roboto_Light"], 60f, FontStyle.Regular, GraphicsUnit.Pixel);
+                    return new Font(RobotoFontFamilies["Roboto_Light"], f*60f, FontStyle.Regular, GraphicsUnit.Pixel);
 
                 case fontType.H3:
-                    return new Font(RobotoFontFamilies["Roboto"], 48f, FontStyle.Bold, GraphicsUnit.Pixel);
+                    return new Font(RobotoFontFamilies["Roboto"], f*48f, FontStyle.Bold, GraphicsUnit.Pixel);
 
                 case fontType.H4:
-                    return new Font(RobotoFontFamilies["Roboto"], 34f, FontStyle.Bold, GraphicsUnit.Pixel);
+                    return new Font(RobotoFontFamilies["Roboto"], f*34f, FontStyle.Bold, GraphicsUnit.Pixel);
 
                 case fontType.H5:
-                    return new Font(RobotoFontFamilies["Roboto"], 24f, FontStyle.Bold, GraphicsUnit.Pixel);
+                    return new Font(RobotoFontFamilies["Roboto"], f*24f, FontStyle.Bold, GraphicsUnit.Pixel);
 
                 case fontType.H6:
-                    return new Font(RobotoFontFamilies["Roboto_Medium"], 20f, FontStyle.Bold, GraphicsUnit.Pixel);
+                    return new Font(RobotoFontFamilies["Roboto_Medium"], f*20f, FontStyle.Bold, GraphicsUnit.Pixel);
 
                 case fontType.Subtitle1:
-                    return new Font(RobotoFontFamilies["Roboto"], 16f, FontStyle.Regular, GraphicsUnit.Pixel);
+                    return new Font(RobotoFontFamilies["Roboto"], f*16f, FontStyle.Regular, GraphicsUnit.Pixel);
 
                 case fontType.Subtitle2:
-                    return new Font(RobotoFontFamilies["Roboto_Medium"], 14f, FontStyle.Bold, GraphicsUnit.Pixel);
+                    return new Font(RobotoFontFamilies["Roboto_Medium"], f*14f, FontStyle.Bold, GraphicsUnit.Pixel);
                 
                 case fontType.SubtleEmphasis:
-                    return new Font(RobotoFontFamilies["Roboto"], 12f, FontStyle.Italic, GraphicsUnit.Pixel);
+                    return new Font(RobotoFontFamilies["Roboto"], f*12f, FontStyle.Italic, GraphicsUnit.Pixel);
 
                 case fontType.Body1:
-                    return new Font(RobotoFontFamilies["Roboto"], 14f, FontStyle.Regular, GraphicsUnit.Pixel);
+                    return new Font(RobotoFontFamilies["Roboto"], f*14f, FontStyle.Regular, GraphicsUnit.Pixel);
 
                 case fontType.Body2:
-                    return new Font(RobotoFontFamilies["Roboto"], 12f, FontStyle.Regular, GraphicsUnit.Pixel);
+                    return new Font(RobotoFontFamilies["Roboto"], f*12f, FontStyle.Regular, GraphicsUnit.Pixel);
 
                 case fontType.Button:
-                    return new Font(RobotoFontFamilies["Roboto"], 14f, FontStyle.Bold, GraphicsUnit.Pixel);
+                    return new Font(RobotoFontFamilies["Roboto"], f*14f, FontStyle.Bold, GraphicsUnit.Pixel);
 
                 case fontType.Caption:
-                    return new Font(RobotoFontFamilies["Roboto"], 12f, FontStyle.Regular, GraphicsUnit.Pixel);
+                    return new Font(RobotoFontFamilies["Roboto"], f*12f, FontStyle.Regular, GraphicsUnit.Pixel);
 
                 case fontType.Overline:
-                    return new Font(RobotoFontFamilies["Roboto"], 10f, FontStyle.Regular, GraphicsUnit.Pixel);
+                    return new Font(RobotoFontFamilies["Roboto"], f*10f, FontStyle.Regular, GraphicsUnit.Pixel);
             }
-            return new Font(RobotoFontFamilies["Roboto"], 14f, FontStyle.Regular, GraphicsUnit.Pixel);
+            return new Font(RobotoFontFamilies["Roboto"], f*14f, FontStyle.Regular, GraphicsUnit.Pixel);
         }
 
         /// <summary>
@@ -346,10 +327,14 @@
         /// </summary>
         /// <param name="size">font size, ranges from 12 up to 16</param>
         /// <returns></returns>
-        public IntPtr getTextBoxFontBySize(int size)
+        public IntPtr getTextBoxFontBySize(int size, int dpi=96)
         {
-            string name = "textBox" + Math.Min(16, Math.Max(12, size)).ToString();
-            return logicalFonts[name];
+            string key = "textBox" + Math.Min(16, Math.Max(12, size)).ToString() + "-" + dpi.ToString();
+            if (logicalFonts.TryGetValue(key, out var font))
+                return font;
+            IntPtr newfont = createLogicalFont(size>13?"Roboto":"Roboto Medium", size, size>13?NativeTextRenderer.logFontWeight.FW_NORMAL:NativeTextRenderer.logFontWeight.FW_MEDIUM,0,dpi);
+            logicalFonts[key] = newfont;
+            return newfont;
         }
 
         /// <summary>
@@ -357,9 +342,14 @@
         /// </summary>
         /// <param name="type">material design font type</param>
         /// <returns></returns>
-        public IntPtr getLogFontByType(fontType type)
+        public IntPtr getLogFontByType(fontType type, int dpi = 96)
         {
-            return logicalFonts[Enum.GetName(typeof(fontType), type)];
+            string key = Enum.GetName(typeof(fontType), type) + "-" + dpi.ToString();
+            if (logicalFonts.TryGetValue(key, out var font))
+                return font;
+            IntPtr newfont = createLogicalFontByType(type,dpi);
+            logicalFonts[key] = newfont;
+            return newfont;
         }
 
         // Font stuff
@@ -384,15 +374,50 @@
             privateFontCollection.AddMemoryFont(ptrFont, dataLength);
         }
 
-        private IntPtr createLogicalFont(string fontName, int size, NativeTextRenderer.logFontWeight weight, byte lfItalic = 0)
+        private IntPtr createLogicalFont(string fontName, int size, NativeTextRenderer.logFontWeight weight, byte lfItalic = 0, int dpi=96)
         {
             // Logical font:
             NativeTextRenderer.LogFont lfont = new NativeTextRenderer.LogFont();
             lfont.lfFaceName = fontName;
-            lfont.lfHeight = -size;
+            lfont.lfHeight = (int)Math.Round(-size*dpi/96f);
             lfont.lfWeight = (int)weight;
             lfont.lfItalic = lfItalic;
             return NativeTextRenderer.CreateFontIndirect(lfont);
+        }
+
+        private IntPtr createLogicalFontByType(fontType type, int dpi=96)
+        {
+            switch (type) { 
+                case fontType.H1:
+                    return createLogicalFont("Roboto Light", 96, NativeTextRenderer.logFontWeight.FW_LIGHT, 0, dpi);
+                case fontType.H2:
+                    return createLogicalFont("Roboto Light", 60, NativeTextRenderer.logFontWeight.FW_LIGHT, 0, dpi);
+                case fontType.H3:
+                    return createLogicalFont("Roboto", 48, NativeTextRenderer.logFontWeight.FW_BOLD, 0, dpi);
+                case fontType.H4:
+                    return createLogicalFont("Roboto", 34, NativeTextRenderer.logFontWeight.FW_BOLD, 0, dpi);
+                case fontType.H5:
+                    return createLogicalFont("Roboto", 24, NativeTextRenderer.logFontWeight.FW_BOLD, 0, dpi);
+                case fontType.H6:
+                    return createLogicalFont("Roboto Medium", 20, NativeTextRenderer.logFontWeight.FW_MEDIUM, 0, dpi);
+                case fontType.Subtitle1:
+                    return createLogicalFont("Roboto", 16, NativeTextRenderer.logFontWeight.FW_REGULAR, 0, dpi);
+                case fontType.Subtitle2:
+                    return createLogicalFont("Roboto Medium", 14, NativeTextRenderer.logFontWeight.FW_MEDIUM, 0, dpi);
+                case fontType.SubtleEmphasis:
+                    return createLogicalFont("Roboto", 12, NativeTextRenderer.logFontWeight.FW_NORMAL, 1, dpi);
+                case fontType.Body1:
+                    return createLogicalFont("Roboto", 16, NativeTextRenderer.logFontWeight.FW_REGULAR, 0, dpi);
+                case fontType.Body2:
+                    return createLogicalFont("Roboto", 14, NativeTextRenderer.logFontWeight.FW_REGULAR, 0, dpi);
+                case fontType.Button:
+                    return createLogicalFont("Roboto Medium", 14, NativeTextRenderer.logFontWeight.FW_MEDIUM, 0, dpi);
+                case fontType.Caption:
+                    return createLogicalFont("Roboto", 12, NativeTextRenderer.logFontWeight.FW_REGULAR, 0, dpi);
+                case fontType.Overline:
+                    return createLogicalFont("Roboto", 10, NativeTextRenderer.logFontWeight.FW_REGULAR, 0, dpi);
+            };
+            return IntPtr.Zero;
         }
 
         // Dyanmic Themes
