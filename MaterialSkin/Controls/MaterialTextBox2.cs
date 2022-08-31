@@ -10,6 +10,9 @@ namespace MaterialSkin.Controls
 
     public class MaterialTextBox2 : Control, IMaterialControl
     {
+        private float dpiMultiplicator;
+        protected int dpiAdjust(int value) => (int) Math.Round(value * dpiMultiplicator);
+        protected float dpiAdjust(float value) => value * dpiMultiplicator;
 
         MaterialContextMenuStrip cms = new BaseTextBoxContextMenuStrip();
         ContextMenuStrip _lastContextMenuStrip = new ContextMenuStrip();
@@ -73,7 +76,7 @@ namespace MaterialSkin.Controls
             {
                 _showAssistiveText = value;
                 if (_showAssistiveText)
-                    _helperTextHeight = HELPER_TEXT_HEIGHT;
+                    _helperTextHeight = HelperTextHeight;
                 else
                     _helperTextHeight = 0;
                 UpdateHeight();
@@ -1267,6 +1270,16 @@ namespace MaterialSkin.Controls
         private const int ACTIVATION_INDICATOR_HEIGHT = 2;
         private const int HELPER_TEXT_HEIGHT = 16;
         private const int FONT_HEIGHT = 20;
+        private int PrefixSuffixPadding;
+        private int IconSize;
+        private int HintTextSmallSize;
+        private int HintTextSmallY;
+        private int LeftPadding;
+        private int RightPadding;
+        private int ActivationIndicatorHeight;
+        private int HelperTextHeight;
+        private new int FontHeight;
+        private int aHeight;
         
         private int HEIGHT = 48;
 
@@ -1288,6 +1301,18 @@ namespace MaterialSkin.Controls
 
         public MaterialTextBox2()
         {
+            dpiMultiplicator = DeviceDpi / 96f;
+            PrefixSuffixPadding = dpiAdjust(PREFIX_SUFFIX_PADDING);
+            IconSize = dpiAdjust(ICON_SIZE);
+            HintTextSmallSize = dpiAdjust(HINT_TEXT_SMALL_SIZE);
+            HintTextSmallY = dpiAdjust(HINT_TEXT_SMALL_Y);
+            LeftPadding = dpiAdjust(LEFT_PADDING);
+            RightPadding = dpiAdjust(RIGHT_PADDING);
+            ActivationIndicatorHeight = dpiAdjust(ACTIVATION_INDICATOR_HEIGHT);
+            HelperTextHeight = dpiAdjust(HELPER_TEXT_HEIGHT);
+            FontHeight = dpiAdjust(FONT_HEIGHT);
+            aHeight = dpiAdjust(HEIGHT);
+
             // Material Properties
             UseAccent = true;
             MouseState = MouseState.OUT;
@@ -1313,7 +1338,7 @@ namespace MaterialSkin.Controls
                 preProcessIcons();
             };
 
-            Font = SkinManager.getFontByType(MaterialSkinManager.fontType.Subtitle1);
+            Font = SkinManager.getFontByType(MaterialSkinManager.fontType.Subtitle1, DeviceDpi);
 
             baseTextBox = new BaseTextBox
             {
@@ -1417,8 +1442,8 @@ namespace MaterialSkin.Controls
 
             // HintText
             bool userTextPresent = !String.IsNullOrEmpty(Text);
-            Rectangle helperTextRect = new Rectangle(LEFT_PADDING - _prefix_padding, LINE_Y + ACTIVATION_INDICATOR_HEIGHT, Width - (LEFT_PADDING - _prefix_padding) - _right_padding, HELPER_TEXT_HEIGHT);
-            Rectangle hintRect = new Rectangle(_left_padding - _prefix_padding, HINT_TEXT_SMALL_Y, Width - (_left_padding - _prefix_padding) - _right_padding, HINT_TEXT_SMALL_SIZE);
+            Rectangle helperTextRect = new Rectangle(LeftPadding - _prefix_padding, LINE_Y + ActivationIndicatorHeight, Width - (LeftPadding - _prefix_padding) - _right_padding, HelperTextHeight);
+            Rectangle hintRect = new Rectangle(_left_padding - _prefix_padding, HintTextSmallY, Width - (_left_padding - _prefix_padding) - _right_padding, HintTextSmallSize);
             int hintTextSize = 12;
 
             // bottom line base
@@ -1463,7 +1488,7 @@ namespace MaterialSkin.Controls
                     // Draw Prefix text 
                     NativeText.DrawTransparentText(
                     _prefixsuffixText,
-                    SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1),
+                    SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1, DeviceDpi),
                     Enabled ? SkinManager.TextMediumEmphasisColor : SkinManager.TextDisabledOrHintColor,
                     prefixRect.Location,
                     prefixRect.Size,
@@ -1486,7 +1511,7 @@ namespace MaterialSkin.Controls
                     // Draw Suffix text 
                     NativeText.DrawTransparentText(
                     _prefixsuffixText,
-                    SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1),
+                    SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1, DeviceDpi),
                     Enabled ? SkinManager.TextMediumEmphasisColor : SkinManager.TextDisabledOrHintColor,
                     suffixRect.Location,
                     suffixRect.Size,
@@ -1501,7 +1526,7 @@ namespace MaterialSkin.Controls
                 {
                     NativeText.DrawTransparentText(
                     Hint,
-                    SkinManager.getTextBoxFontBySize(hintTextSize),
+                    SkinManager.getTextBoxFontBySize(hintTextSize, DeviceDpi),
                     Enabled ? !_errorState || (!userTextPresent && !isFocused) ? isFocused ? UseAccent ?
                     SkinManager.ColorScheme.AccentColor : // Focus Accent
                     SkinManager.ColorScheme.PrimaryColor : // Focus Primary
@@ -1521,7 +1546,7 @@ namespace MaterialSkin.Controls
                 {
                     NativeText.DrawTransparentText(
                     HelperText,
-                    SkinManager.getTextBoxFontBySize(hintTextSize),
+                    SkinManager.getTextBoxFontBySize(hintTextSize, DeviceDpi),
                     Enabled ? !_errorState || (!userTextPresent && !isFocused) ? isFocused ? UseAccent ?
                     SkinManager.ColorScheme.AccentColor : // Focus Accent
                     SkinManager.ColorScheme.PrimaryColor : // Focus Primary
@@ -1541,7 +1566,7 @@ namespace MaterialSkin.Controls
                 {
                     NativeText.DrawTransparentText(
                     ErrorMessage,
-                    SkinManager.getTextBoxFontBySize(hintTextSize),
+                    SkinManager.getTextBoxFontBySize(hintTextSize, DeviceDpi),
                     Enabled ? 
                     SkinManager.BackgroundHoverRedColor : // error state
                     SkinManager.TextDisabledOrHintColor, // Disabled
@@ -1628,7 +1653,7 @@ namespace MaterialSkin.Controls
             preProcessIcons();
 
             Size = new Size(Width, HEIGHT);
-            LINE_Y = HEIGHT - ACTIVATION_INDICATOR_HEIGHT - _helperTextHeight;
+            LINE_Y = HEIGHT - ActivationIndicatorHeight - _helperTextHeight;
 
         }
 
@@ -1843,7 +1868,7 @@ namespace MaterialSkin.Controls
 
         private void UpdateHeight()
         {
-            HEIGHT = _UseTallSize ? 48 : 36;
+            HEIGHT = dpiAdjust(_UseTallSize ? 48 : 36);
             HEIGHT += _helperTextHeight;
             Size = new Size(Size.Width, HEIGHT);
         }
@@ -1851,20 +1876,20 @@ namespace MaterialSkin.Controls
         private void UpdateRects()
         {
             if (LeadingIcon != null)
-                _left_padding = LEFT_PADDING + ICON_SIZE;
+                _left_padding = LeftPadding + IconSize;
             else
-                _left_padding = LEFT_PADDING;
+                _left_padding = LeftPadding;
 
             if (_trailingIcon != null)
-                _right_padding = RIGHT_PADDING + ICON_SIZE;
+                _right_padding = RightPadding + IconSize;
             else
-                _right_padding = RIGHT_PADDING;
+                _right_padding = RightPadding;
 
             if (_prefixsuffix == PrefixSuffixTypes.Prefix && _prefixsuffixText != null && _prefixsuffixText.Length > 0)
             {
                 using (NativeTextRenderer NativeText = new NativeTextRenderer(CreateGraphics()))
                 {
-                    _prefix_padding = NativeText.MeasureLogString(_prefixsuffixText, SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1)).Width + PREFIX_SUFFIX_PADDING;
+                    _prefix_padding = NativeText.MeasureLogString(_prefixsuffixText, SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1, DeviceDpi)).Width + PrefixSuffixPadding;
                     _left_padding += _prefix_padding;
                 }
             }
@@ -1875,7 +1900,7 @@ namespace MaterialSkin.Controls
             {
                 using (NativeTextRenderer NativeText = new NativeTextRenderer(CreateGraphics()))
                 {
-                    _suffix_padding = NativeText.MeasureLogString(_prefixsuffixText, SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1)).Width + PREFIX_SUFFIX_PADDING;
+                    _suffix_padding = NativeText.MeasureLogString(_prefixsuffixText, SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1, DeviceDpi)).Width + PrefixSuffixPadding;
                     _right_padding += _suffix_padding;
                 }
             }
@@ -1884,19 +1909,19 @@ namespace MaterialSkin.Controls
 
             if (hasHint && UseTallSize && (isFocused || !String.IsNullOrEmpty(Text)))
             {
-                baseTextBox.Location = new Point(_left_padding, 22);
+                baseTextBox.Location = new Point(_left_padding, dpiAdjust(22));
                 baseTextBox.Width = Width - (_left_padding + _right_padding);
-                baseTextBox.Height = FONT_HEIGHT;
+                baseTextBox.Height = FontHeight;
             }
             else
             {
-                baseTextBox.Location = new Point(_left_padding, (LINE_Y + ACTIVATION_INDICATOR_HEIGHT) / 2 - FONT_HEIGHT / 2);
+                baseTextBox.Location = new Point(_left_padding, (LINE_Y + ActivationIndicatorHeight) / 2 - FontHeight / 2);
                 baseTextBox.Width = Width - (_left_padding + _right_padding);
-                baseTextBox.Height = FONT_HEIGHT;
+                baseTextBox.Height = FontHeight;
             }
 
-            _leadingIconBounds = new Rectangle(8, ((LINE_Y + ACTIVATION_INDICATOR_HEIGHT) / 2) - (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE);
-            _trailingIconBounds = new Rectangle(Width - (ICON_SIZE + 8), ((LINE_Y + ACTIVATION_INDICATOR_HEIGHT) / 2) - (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE);
+            _leadingIconBounds = new Rectangle(8, ((LINE_Y + ActivationIndicatorHeight) / 2) - (IconSize / 2), IconSize, IconSize);
+            _trailingIconBounds = new Rectangle(Width - (IconSize + 8), ((LINE_Y + ActivationIndicatorHeight) / 2) - (IconSize / 2), IconSize, IconSize);
         }
 
         public void SetErrorState(bool ErrorState)

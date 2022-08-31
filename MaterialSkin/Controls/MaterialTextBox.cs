@@ -12,6 +12,9 @@
     [ToolboxItem(false), Description("This control has been replaced by MaterialTextBox2"), Obsolete("Use MaterialTextBox2 instead", false)]
     public class MaterialTextBox : RichTextBox, IMaterialControl
     {
+        private float dpiMultiplicator;
+        protected int dpiAdjust(int value) => (int) Math.Round(value * dpiMultiplicator);
+        protected float dpiAdjust(float value) => value * dpiMultiplicator;
 
         MaterialContextMenuStrip cms = new TextBoxContextMenuStrip();
         ContextMenuStrip _lastContextMenuStrip = new ContextMenuStrip();
@@ -38,7 +41,7 @@
             set
             {
                 _UseTallSize = value;
-                HEIGHT = UseTallSize ? 50 : 36;
+                HEIGHT = dpiAdjust(UseTallSize ? 50 : 36);
                 Size = new Size(Size.Width, HEIGHT);
                 UpdateRects(false);
                 Invalidate();
@@ -157,6 +160,10 @@
         private const int BOTTOM_PADDING = 3;
         private int HEIGHT = 50;
         private int LINE_Y;
+        private int IconSize;
+        private int HintTextSmallSize;
+        private int HintTextSmallY;
+        private int BottomPadding;
 
         private bool hasHint;
         private bool _errorState = false;
@@ -219,6 +226,13 @@
 
         public MaterialTextBox()
         {
+            dpiMultiplicator = DeviceDpi / 96f;
+
+            IconSize = dpiAdjust(ICON_SIZE);
+            HintTextSmallSize = dpiAdjust(HINT_TEXT_SMALL_SIZE);
+            HintTextSmallY = dpiAdjust(HINT_TEXT_SMALL_Y);
+            BottomPadding = dpiAdjust(BOTTOM_PADDING);
+
             // Material Properties
             Hint = "";
             Password = false;
@@ -263,7 +277,7 @@
         protected override void OnCreateControl()
         {
             base.OnCreateControl();
-            base.Font = SkinManager.getFontByType(MaterialSkinManager.fontType.Subtitle1);
+            base.Font = SkinManager.getFontByType(MaterialSkinManager.fontType.Subtitle1, DeviceDpi);
             base.AutoSize = false;
 
             SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
@@ -271,7 +285,7 @@
             if (Password) SendMessage(Handle, EM_SETPASSWORDCHAR, 'T', 0);
 
             // Size and padding
-            HEIGHT = UseTallSize ? 50 : 36;
+            HEIGHT = dpiAdjust(UseTallSize ? 50 : 36);
             Size = new Size(Size.Width, HEIGHT);
             LINE_Y = HEIGHT - BOTTOM_PADDING;
             UpdateRects();
@@ -316,31 +330,32 @@
             return new Size(proposedSize.Width, HEIGHT);
         }
 
-        private static Size ResizeIcon(Image Icon)
+        // can't use dpiAdjust in a static function
+        private Size ResizeIcon(Image Icon)
         {
             int newWidth, newHeight;
             //Resize icon if greater than ICON_SIZE
-            if (Icon.Width > ICON_SIZE || Icon.Height > ICON_SIZE)
+            if (Icon.Width > IconSize || Icon.Height > IconSize)
             {
                 //calculate aspect ratio
                 float aspect = Icon.Width / (float)Icon.Height;
 
                 //calculate new dimensions based on aspect ratio
-                newWidth = (int)(ICON_SIZE * aspect);
+                newWidth = (int)(IconSize * aspect);
                 newHeight = (int)(newWidth / aspect);
 
                 //if one of the two dimensions exceed the box dimensions
-                if (newWidth > ICON_SIZE || newHeight > ICON_SIZE)
+                if (newWidth > IconSize || newHeight > IconSize)
                 {
                     //depending on which of the two exceeds the box dimensions set it as the box dimension and calculate the other one based on the aspect ratio
                     if (newWidth > newHeight)
                     {
-                        newWidth = ICON_SIZE;
+                        newWidth = IconSize;
                         newHeight = (int)(newWidth / aspect);
                     }
                     else
                     {
-                        newHeight = ICON_SIZE;
+                        newHeight = IconSize;
                         newWidth = (int)(newHeight * aspect);
                     }
                 }
@@ -395,7 +410,7 @@
             iconsErrorBrushes = new Dictionary<string, TextureBrush>(2);
 
             // Image Rect
-            Rectangle destRect = new Rectangle(0, 0, ICON_SIZE, ICON_SIZE);
+            Rectangle destRect = new Rectangle(0, 0, IconSize, IconSize);
 
             if (_leadingIcon != null)
             {
@@ -495,28 +510,28 @@
         private void UpdateRects(bool RedefineTextField = true)
         {
             if (LeadingIcon != null)
-                _left_padding = SkinManager.FORM_PADDING + ICON_SIZE;
+                _left_padding = dpiAdjust(SkinManager.FORM_PADDING + ICON_SIZE);
             else
-                _left_padding = SkinManager.FORM_PADDING;
+                _left_padding = dpiAdjust(SkinManager.FORM_PADDING);
 
             if (_trailingIcon != null)
-                _right_padding = SkinManager.FORM_PADDING + ICON_SIZE;
+                _right_padding = dpiAdjust(SkinManager.FORM_PADDING + ICON_SIZE);
             else
-                _right_padding = SkinManager.FORM_PADDING;
+                _right_padding = dpiAdjust(SkinManager.FORM_PADDING);
 
-            _leadingIconBounds = new Rectangle(8, (HEIGHT / 2) - (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE);
-            _trailingIconBounds = new Rectangle(Width - (ICON_SIZE + 8), (HEIGHT / 2) - (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE);
+            _leadingIconBounds = new Rectangle(8, (HEIGHT / 2) - (IconSize / 2), IconSize, IconSize);
+            _trailingIconBounds = new Rectangle(Width - (IconSize + 8), (HEIGHT / 2) - (IconSize / 2), IconSize, IconSize);
             _textfieldBounds = new Rectangle(_left_padding, ClientRectangle.Y, Width - _left_padding - _right_padding, LINE_Y);
 
             if (RedefineTextField)
             {
-            var rect = new Rectangle(_left_padding, UseTallSize ? hasHint ?
-        (HINT_TEXT_SMALL_Y + HINT_TEXT_SMALL_SIZE) : // Has hint and it's tall
-        (int)(LINE_Y / 3.5) : // No hint and tall
-        Height / 5, // not tall
-        ClientSize.Width - _left_padding - _right_padding, LINE_Y);
-            RECT rc = new RECT(rect);
-            SendMessageRefRect(Handle, EM_SETRECT, 0, ref rc);
+                var rect = new Rectangle(_left_padding, UseTallSize ? hasHint ?
+                    (HintTextSmallY + HintTextSmallSize) : // Has hint and it's tall
+                    (int)(LINE_Y / 3.5) : // No hint and tall
+                    Height / 5, // not tall
+                    ClientSize.Width - _left_padding - _right_padding, LINE_Y);
+                RECT rc = new RECT(rect);
+                SendMessageRefRect(Handle, EM_SETRECT, 0, ref rc);
             }
 
         }
@@ -584,7 +599,7 @@
                     if (hasHint && UseTallSize && (Focused || userTextPresent))
                     {
                         // hint text
-                        hintRect = new Rectangle(_left_padding, HINT_TEXT_SMALL_Y, Width - _left_padding - _right_padding, HINT_TEXT_SMALL_SIZE);
+                        hintRect = new Rectangle(_left_padding, HintTextSmallY, Width - _left_padding - _right_padding, HintTextSmallSize);
                         hintTextSize = 12;
                     }
 
@@ -604,9 +619,9 @@
                     {
                         hintRect = new Rectangle(
                             _left_padding,
-                            userTextPresent ? (HINT_TEXT_SMALL_Y) : ClientRectangle.Y + (int)((HINT_TEXT_SMALL_Y - ClientRectangle.Y) * animationProgress),
+                            userTextPresent ? (HintTextSmallY) : ClientRectangle.Y + (int)((HintTextSmallY - ClientRectangle.Y) * animationProgress),
                             Width - _left_padding - _right_padding,
-                            userTextPresent ? (HINT_TEXT_SMALL_SIZE) : (int)(LINE_Y + (HINT_TEXT_SMALL_SIZE - LINE_Y) * animationProgress));
+                            userTextPresent ? (HintTextSmallSize) : (int)(LINE_Y + (HintTextSmallSize - LINE_Y) * animationProgress));
                         hintTextSize = userTextPresent ? 12 : (int)(16 + (12 - 16) * animationProgress);
                     }
 
@@ -631,31 +646,30 @@
 
             g.Clip = new Region(textRect);
             textRect.X -= scrollPos.X;
+            IntPtr logfont = SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1, DeviceDpi);
 
             using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
             {
                 // Selection rects calc
                 string textBeforeSelection = textToDisplay.Substring(0, SelectionStart);
                 textSelected = textToDisplay.Substring(SelectionStart, SelectionLength);
-
-                int selectX = NativeText.MeasureLogString(textBeforeSelection, SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1)).Width;
-                int selectWidth = NativeText.MeasureLogString(textSelected, SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1)).Width;
+                int selectX = NativeText.MeasureLogString(textBeforeSelection, logfont).Width;
+                int selectWidth = NativeText.MeasureLogString(textSelected, logfont).Width;
 
                 textSelectRect = new Rectangle(
                     textRect.X + selectX, UseTallSize ? hasHint ?
-                     textRect.Y + BOTTOM_PADDING : // tall and hint
-                     LINE_Y / 3 - BOTTOM_PADDING : // tall and no hint
-                     BOTTOM_PADDING, // not tall
+                     textRect.Y + BottomPadding : // tall and hint
+                     LINE_Y / 3 - BottomPadding : // tall and no hint
+                     BottomPadding, // not tall
                     selectWidth,
                     UseTallSize ? hasHint ?
-                    textRect.Height - BOTTOM_PADDING * 2 : // tall and hint
+                    textRect.Height - BottomPadding * 2 : // tall and hint
                     (int)(LINE_Y / 2) : // tall and no hint
-                    LINE_Y - BOTTOM_PADDING * 2); // not tall
+                    LINE_Y - BottomPadding * 2); // not tall
 
                 // Draw user text
                 NativeText.DrawTransparentText(
-                    textToDisplay,
-                    SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1),
+                    textToDisplay, logfont,
                     Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
                     textRect.Location,
                     textRect.Size,
@@ -671,8 +685,7 @@
                 using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
                 {
                     NativeText.DrawTransparentText(
-                        textSelected,
-                        SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1),
+                        textSelected, logfont,
                         SkinManager.ColorScheme.TextColor,
                         textSelectRect.Location,
                         textSelectRect.Size,
@@ -688,17 +701,17 @@
                 using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
                 {
                     NativeText.DrawTransparentText(
-                    Hint,
-                    SkinManager.getTextBoxFontBySize(hintTextSize),
-                    Enabled ? !_errorState || (!userTextPresent && !Focused) ? Focused ? UseAccent ?
-                    SkinManager.ColorScheme.AccentColor : // Focus Accent
-                    SkinManager.ColorScheme.PrimaryColor : // Focus Primary
-                    SkinManager.TextMediumEmphasisColor : // not focused
-                    SkinManager.BackgroundHoverRedColor : // error state
-                    SkinManager.TextDisabledOrHintColor, // Disabled
-                    hintRect.Location,
-                    hintRect.Size,
-                    NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle);
+                        Hint,
+                        SkinManager.getTextBoxFontBySize(hintTextSize, DeviceDpi),
+                        Enabled ? !_errorState || (!userTextPresent && !Focused) ? Focused ? UseAccent ?
+                        SkinManager.ColorScheme.AccentColor : // Focus Accent
+                        SkinManager.ColorScheme.PrimaryColor : // Focus Primary
+                        SkinManager.TextMediumEmphasisColor : // not focused
+                        SkinManager.BackgroundHoverRedColor : // error state
+                        SkinManager.TextDisabledOrHintColor, // Disabled
+                        hintRect.Location,
+                        hintRect.Size,
+                        NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle);
                 }
             }
         }
@@ -763,7 +776,7 @@
         {
             base.OnResize(e);
             Size = new Size(Width, HEIGHT);
-            LINE_Y = HEIGHT - BOTTOM_PADDING;
+            LINE_Y = HEIGHT - BottomPadding;
             UpdateRects(false);
             preProcessIcons();
 

@@ -53,7 +53,7 @@
             set
             {
                 _fontType = value;
-                Font = SkinManager.getFontByType(_fontType);
+                Font = SkinManager.getFontByType(_fontType, DeviceDpi);
                 Refresh();
             }
         }
@@ -71,7 +71,7 @@
                 Size strSize;
                 using (NativeTextRenderer NativeText = new NativeTextRenderer(CreateGraphics()))
                 {
-                    strSize = NativeText.MeasureLogString(Text, SkinManager.getLogFontByType(_fontType));
+                    strSize = NativeText.MeasureLogString(Text, SkinManager.getLogFontByType(_fontType, DeviceDpi));
                     strSize.Width += 1; // necessary to avoid a bug when autosize = true
                 }
                 return strSize;
@@ -140,7 +140,7 @@
             {
                 NativeText.DrawMultilineTransparentText(
                     Text,
-                    SkinManager.getLogFontByType(_fontType),
+                    SkinManager.getLogFontByType(_fontType, DeviceDpi),
                     Enabled ? HighEmphasis ? UseAccent ?
                     SkinManager.ColorScheme.AccentColor : // High emphasis, accent
                     (SkinManager.Theme == MaterialSkin.MaterialSkinManager.Themes.LIGHT) ?
@@ -156,7 +156,7 @@
 
         protected override void InitLayout()
         {
-            Font = SkinManager.getFontByType(_fontType);
+            Font = SkinManager.getFontByType(_fontType, DeviceDpi);
         }
     }
 }

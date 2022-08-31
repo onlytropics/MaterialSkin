@@ -10,6 +10,9 @@ namespace MaterialSkin.Controls
 
     public class MaterialMultiLineTextBox2 : Control, IMaterialControl
     {
+        private float dpiMultiplicator;
+        protected int dpiAdjust(int value) => (int) Math.Round(value * dpiMultiplicator);
+        protected float dpiAdjust(float value) => value * dpiMultiplicator;
 
         MaterialContextMenuStrip cms = new BaseTextBoxContextMenuStrip();
         ContextMenuStrip _lastContextMenuStrip = new ContextMenuStrip();
@@ -1129,9 +1132,26 @@ namespace MaterialSkin.Controls
         private readonly uint WM_VSCROLL = 277;
         private readonly IntPtr ptrLparam = new IntPtr(0);
 
+        private int HintTextSmallSize;
+        private int HintTextSmallY;
+        private int LineBottomPadding;
+        private int TopPadding;
+        private int BottomPadding;
+        private int LeftPadding;
+        private int RightPadding;
+
         protected readonly BaseTextBox baseTextBox;
         public MaterialMultiLineTextBox2()
         {
+            dpiMultiplicator = DeviceDpi / 96f;
+            HintTextSmallSize = dpiAdjust(HINT_TEXT_SMALL_SIZE);
+            HintTextSmallY = dpiAdjust(HINT_TEXT_SMALL_Y);
+            LineBottomPadding = dpiAdjust(LINE_BOTTOM_PADDING);
+            TopPadding = dpiAdjust(TOP_PADDING);
+            BottomPadding = dpiAdjust(BOTTOM_PADDING);
+            LeftPadding = dpiAdjust(LEFT_PADDING);
+            RightPadding = dpiAdjust(RIGHT_PADDING);
+
             AllowScroll = true;
             // Material Properties
             UseAccent = true;
@@ -1151,7 +1171,7 @@ namespace MaterialSkin.Controls
             baseTextBox = new BaseTextBox
             {
                 BorderStyle = BorderStyle.None,
-                Font = SkinManager.getFontByType(MaterialSkinManager.fontType.Subtitle1),
+                Font = SkinManager.getFontByType(MaterialSkinManager.fontType.Subtitle1, DeviceDpi),
                 ForeColor = SkinManager.TextHighEmphasisColor,
                 Multiline = true
             };
@@ -1325,11 +1345,11 @@ namespace MaterialSkin.Controls
         {
             base.OnResize(e);
 
-            baseTextBox.Location = new Point(LEFT_PADDING, TOP_PADDING);
-            baseTextBox.Width = Width - (LEFT_PADDING + RIGHT_PADDING);
-            baseTextBox.Height = Height - (TOP_PADDING + BOTTOM_PADDING);
+            baseTextBox.Location = new Point(LeftPadding, TopPadding);
+            baseTextBox.Width = Width - (LeftPadding + RightPadding);
+            baseTextBox.Height = Height - (TopPadding + BottomPadding);
 
-            LINE_Y = Height - LINE_BOTTOM_PADDING;
+            LINE_Y = Height - LineBottomPadding;
 
         }
 

@@ -21,6 +21,13 @@
         private const int MINIMUMWIDTHICONONLY = 36; //64;
         private const int HEIGHTDEFAULT = 36;
         private const int HEIGHTDENSE = 32;
+        private float dpiMultiplicator;
+
+        private int IconSize;
+        private int MinimumWidth;
+        private int MinimumWidthIconOnly;
+        private int HeightDefault;
+        private int HeightDense;
 
         // icons
         private TextureBrush iconsBrushes;
@@ -233,6 +240,14 @@
         /// </summary>
         public MaterialButton()
         {
+            dpiMultiplicator = this.DeviceDpi / 96f;
+
+            IconSize = dpiAdjust(ICON_SIZE);
+            MinimumWidth = dpiAdjust(MINIMUMWIDTH);
+            MinimumWidthIconOnly = dpiAdjust(MINIMUMWIDTHICONONLY);
+            HeightDefault = dpiAdjust(HEIGHTDEFAULT);
+            HeightDense = dpiAdjust(HEIGHTDENSE);
+
             DrawShadows = true;
             HighEmphasis = true;
             UseAccentColor = false;
@@ -275,6 +290,9 @@
             Margin = new Padding(4, 6, 4, 6);
             Padding = new Padding(0);
         }
+
+        protected int dpiAdjust(int value) => (int) Math.Round(value * dpiMultiplicator);
+        protected float dpiAdjust(float value) => value * dpiMultiplicator;
 
         /// <summary>
         /// Gets or sets the Text
@@ -325,27 +343,27 @@
 
             int newWidth, newHeight;
             //Resize icon if greater than ICON_SIZE
-            if (Icon.Width> ICON_SIZE || Icon.Height > ICON_SIZE)
+            if (Icon.Width> IconSize || Icon.Height > IconSize)
             {
                 //calculate aspect ratio
                 float aspect = Icon.Width / (float)Icon.Height;
 
                 //calculate new dimensions based on aspect ratio
-                newWidth = (int)(ICON_SIZE * aspect);
+                newWidth = (int)(IconSize * aspect);
                 newHeight = (int)(newWidth / aspect);
 
                 //if one of the two dimensions exceed the box dimensions
-                if (newWidth > ICON_SIZE || newHeight > ICON_SIZE)
+                if (newWidth > IconSize || newHeight > IconSize)
                 {
                     //depending on which of the two exceeds the box dimensions set it as the box dimension and calculate the other one based on the aspect ratio
                     if (newWidth > newHeight)
                     {
-                        newWidth = ICON_SIZE;
+                        newWidth = IconSize;
                         newHeight = (int)(newWidth / aspect);
                     }
                     else
                     {
-                        newHeight = ICON_SIZE;
+                        newHeight = IconSize;
                         newWidth = (int)(newHeight * aspect);
                     }
                 }
@@ -378,7 +396,7 @@
             grayImageAttributes.SetColorMatrix(colorMatrixGray, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 
             // Image Rect
-            Rectangle destRect = new Rectangle(0, 0, ICON_SIZE, ICON_SIZE);
+            Rectangle destRect = new Rectangle(0, 0, IconSize, IconSize);
 
             // Create a pre-processed copy of the image (GRAY)
             Bitmap bgray = new Bitmap(destRect.Width, destRect.Height);
@@ -399,7 +417,7 @@
             textureBrushGray.WrapMode = System.Drawing.Drawing2D.WrapMode.Clamp;
 
             // Translate the brushes to the correct positions
-            var iconRect = new Rectangle(8, (Height/2 - ICON_SIZE / 2), ICON_SIZE, ICON_SIZE);
+            var iconRect = new Rectangle(8, (Height/2 - IconSize / 2), IconSize, IconSize);
 
             textureBrushGray.TranslateTransform(iconRect.X + iconRect.Width / 2 - IconResized.Width / 2,
                                                 iconRect.Y + iconRect.Height / 2 - IconResized.Height / 2);
@@ -427,7 +445,7 @@
             RectangleF buttonRectF = new RectangleF(ClientRectangle.Location, ClientRectangle.Size);
             buttonRectF.X -= 0.5f;
             buttonRectF.Y -= 0.5f;
-            GraphicsPath buttonPath = DrawHelper.CreateRoundRect(buttonRectF, 4);
+            GraphicsPath buttonPath = DrawHelper.CreateRoundRect(buttonRectF, dpiAdjust(4));
 
             // button shadow (blend with form shadow)
             DrawHelper.DrawSquareShadow(g, ClientRectangle);
@@ -528,8 +546,8 @@
             var textRect = ClientRectangle;
             if (Icon != null)
             {
-                textRect.Width -= 8 + ICON_SIZE + 4 + 8; // left padding + icon width + space between Icon and Text + right padding
-                textRect.X += 8 + ICON_SIZE + 4; // left padding + icon width + space between Icon and Text
+                textRect.Width -= dpiAdjust(8 + ICON_SIZE + 4 + 8); // left padding + icon width + space between Icon and Text + right padding
+                textRect.X += dpiAdjust(8 + ICON_SIZE + 4); // left padding + icon width + space between Icon and Text
             }
 
             Color textColor = Enabled ? (HighEmphasis ? (Type == MaterialButtonType.Text || Type == MaterialButtonType.Outlined) ?
@@ -546,7 +564,7 @@
                 NativeText.DrawMultilineTransparentText(
                     CharacterCasing == CharacterCasingEnum.Upper ? base.Text.ToUpper() : CharacterCasing == CharacterCasingEnum.Lower ? base.Text.ToLower() :
                         CharacterCasing == CharacterCasingEnum.Title ? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(base.Text.ToLower()) : base.Text,
-                    SkinManager.getLogFontByType(MaterialSkinManager.fontType.Button),
+                    SkinManager.getLogFontByType(MaterialSkinManager.fontType.Button, DeviceDpi),
                     textColor,
                     textRect.Location,
                     textRect.Size,
@@ -554,7 +572,7 @@
             }
 
             //Icon
-            var iconRect = new Rectangle(8, (Height / 2) - (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE);
+            var iconRect = new Rectangle(8, (Height / 2) - IconSize / 2, IconSize, IconSize);
 
             if (string.IsNullOrEmpty(Text))
             {
@@ -609,7 +627,8 @@
             }
             if (Icon != null && Text.Length==0 && s.Width < MINIMUMWIDTHICONONLY) s.Width = MINIMUMWIDTHICONONLY;
             else if (s.Width < MINIMUMWIDTH) s.Width = MINIMUMWIDTH;
-
+            s.Width = dpiAdjust(s.Width);
+            s.Height = dpiAdjust(s.Height);
             return s;
         }
 

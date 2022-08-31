@@ -85,7 +85,7 @@ namespace MaterialSkin.Controls
                 {
                     NativeText.DrawTransparentText(
                     Hint,
-                    SkinManager.getFontByType(MaterialSkinManager.fontType.Subtitle1),
+                    SkinManager.getFontByType(MaterialSkinManager.fontType.Subtitle1, DeviceDpi),
                     Enabled ?
                     ColorHelper.RemoveAlpha(SkinManager.TextMediumEmphasisColor, BackColor) : // not focused
                     ColorHelper.RemoveAlpha(SkinManager.TextDisabledOrHintColor, BackColor), // Disabled

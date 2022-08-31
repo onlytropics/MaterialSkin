@@ -8,6 +8,11 @@
 
     public class MaterialCard : Panel, IMaterialControl
     {
+        private float dpiMultiplicator;
+        protected int dpiAdjust(int value) => (int) Math.Round(value * dpiMultiplicator);
+        protected float dpiAdjust(float value) => value * dpiMultiplicator;
+
+
         [Browsable(false)]
         public int Depth { get; set; }
 
@@ -19,12 +24,13 @@
 
         public MaterialCard()
         {
+            dpiMultiplicator = this.DeviceDpi / 96f;
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
             Paint += new PaintEventHandler(paintControl);
             BackColor = SkinManager.BackgroundColor;
             ForeColor = SkinManager.TextHighEmphasisColor;
-            Margin = new Padding(SkinManager.FORM_PADDING);
-            Padding = new Padding(SkinManager.FORM_PADDING);
+            Margin = new Padding(dpiAdjust(SkinManager.FORM_PADDING));
+            Padding = new Padding(dpiAdjust(SkinManager.FORM_PADDING));
         }
 
         private void drawShadowOnParent(object sender, PaintEventArgs e)
@@ -103,7 +109,7 @@
             RectangleF cardRectF = new RectangleF(ClientRectangle.Location, ClientRectangle.Size);
             cardRectF.X -= 0.5f;
             cardRectF.Y -= 0.5f;
-            GraphicsPath cardPath = DrawHelper.CreateRoundRect(cardRectF, 4);
+            GraphicsPath cardPath = DrawHelper.CreateRoundRect(cardRectF, dpiAdjust(4));
 
             // button shadow (blend with form shadow)
             DrawHelper.DrawSquareShadow(g, ClientRectangle);

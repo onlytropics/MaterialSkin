@@ -2,6 +2,7 @@ namespace MaterialSkin.Controls
 {
     using MaterialSkin.Animations;
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Text;
@@ -363,6 +364,17 @@ namespace MaterialSkin.Controls
         private const int ACTION_BAR_HEIGHT_DEFAULT = 40;
         #endregion
 
+        #region DPI-adjusted constants
+        private int BorderWidth;
+        private int StatusBarButtonWidth;
+        private int StatusBarHeightDefault;
+        private int IconSize;
+        private int PaddingMinimum;
+        private int TitleLeftPadding;
+        private int ActionBarPadding;
+        private int ActionBarHeightDefault;
+        #endregion
+
         #region Private Fields
         private readonly Cursor[] _resizeCursors = { Cursors.SizeNESW, Cursors.SizeWE, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNS };
 
@@ -410,12 +422,26 @@ namespace MaterialSkin.Controls
 
         private int STATUS_BAR_HEIGHT = 24;
         private int ACTION_BAR_HEIGHT = 40;
+        private int StatusBarHeight;
+        private int ActionBarHeight;
         private float dpiMultiplicator;
         #endregion
 
         public MaterialForm()
         {
             dpiMultiplicator = this.DeviceDpi / 96f;
+            StatusBarHeight = dpiAdjust(STATUS_BAR_HEIGHT);
+            ActionBarHeight = dpiAdjust(ACTION_BAR_HEIGHT);
+
+            BorderWidth = dpiAdjust(BORDER_WIDTH);
+            StatusBarButtonWidth = dpiAdjust(STATUS_BAR_BUTTON_WIDTH);
+            StatusBarHeightDefault = dpiAdjust(STATUS_BAR_HEIGHT_DEFAULT);
+            IconSize = dpiAdjust(ICON_SIZE);
+            PaddingMinimum = dpiAdjust(PADDING_MINIMUM);
+            TitleLeftPadding = dpiAdjust(TITLE_LEFT_PADDING);
+            ActionBarPadding = dpiAdjust(ACTION_BAR_PADDING);
+            ActionBarHeightDefault = dpiAdjust(ACTION_BAR_HEIGHT_DEFAULT);
+
             DrawerWidth = dpiAdjust(200);
             DrawerIsOpen = false;
             DrawerShowIconsWhenHidden = false;
@@ -431,7 +457,7 @@ namespace MaterialSkin.Controls
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
             FormStyle = FormStyles.ActionBar_40;
 
-            Padding = new Padding(dpiAdjust(PADDING_MINIMUM), dpiAdjust(STATUS_BAR_HEIGHT+ ACTION_BAR_HEIGHT), dpiAdjust(PADDING_MINIMUM), dpiAdjust(PADDING_MINIMUM));      //Keep space for resize by mouse
+            Padding = new Padding(PaddingMinimum, StatusBarHeight+ActionBarHeight, PaddingMinimum, PaddingMinimum);      //Keep space for resize by mouse
 
             _clickAnimManager = new AnimationManager()
             {
@@ -450,8 +476,8 @@ namespace MaterialSkin.Controls
         }
 
         #region Private Methods
-        private int dpiAdjust(int value) => (int) Math.Round(value * dpiMultiplicator);
-        private float dpiAdjust(float value) => value * dpiMultiplicator;
+        protected int dpiAdjust(int value) => (int) Math.Round(value * dpiMultiplicator);
+        protected float dpiAdjust(float value) => value * dpiMultiplicator;
 
         protected void AddDrawerOverlayForm()
         {
@@ -619,7 +645,7 @@ namespace MaterialSkin.Controls
             if (drawerControl.ShowIconsWhenHidden)
                 Padding = new Padding(Padding.Left < drawerControl.MinWidth ? drawerControl.MinWidth : Padding.Left, originalPadding.Top, originalPadding.Right, originalPadding.Bottom);
             else
-                Padding = new Padding(PADDING_MINIMUM, originalPadding.Top, originalPadding.Right, originalPadding.Bottom);
+                Padding = new Padding(PaddingMinimum, originalPadding.Top, originalPadding.Right, originalPadding.Bottom);
         }
 
         private void UpdateButtons(MouseButtons button, Point location, bool up = false)
@@ -771,14 +797,16 @@ namespace MaterialSkin.Controls
                     STATUS_BAR_HEIGHT = STATUS_BAR_HEIGHT_DEFAULT;
                     break;
             }
+            ActionBarHeight = dpiAdjust(ACTION_BAR_HEIGHT);
+            StatusBarHeight = dpiAdjust(STATUS_BAR_HEIGHT);
 
-            Padding = new Padding(dpiAdjust(_drawerShowIconsWhenHidden ? drawerControl.MinWidth : PADDING_MINIMUM), dpiAdjust(STATUS_BAR_HEIGHT + ACTION_BAR_HEIGHT), Padding.Right, Padding.Bottom);
+            Padding = new Padding(dpiAdjust(_drawerShowIconsWhenHidden ? drawerControl.MinWidth : PADDING_MINIMUM), StatusBarHeight+ActionBarHeight, Padding.Right, Padding.Bottom);
             originalPadding = Padding;
 
             if (DrawerTabControl != null)
             {
-                var height = ClientSize.Height - dpiAdjust(STATUS_BAR_HEIGHT + ACTION_BAR_HEIGHT);
-                var location = Point.Add(Location, new Size(0, dpiAdjust(STATUS_BAR_HEIGHT + ACTION_BAR_HEIGHT)));
+                var height = ClientSize.Height - StatusBarHeight + ActionBarHeight;
+                var location = Point.Add(Location, new Size(0, StatusBarHeight + ActionBarHeight));
                 drawerOverlay.Size = new Size(ClientSize.Width, height);
                 drawerOverlay.Location = location;
                 drawerForm.Size = new Size(DrawerWidth, height);
@@ -928,42 +956,42 @@ namespace MaterialSkin.Controls
             //True if the mouse is hovering over a child control
             var isChildUnderMouse = GetChildAtPoint(coords) != null;
 
-            if (!isChildUnderMouse && !Maximized && coords.Y < BORDER_WIDTH && coords.X > BORDER_WIDTH && coords.X < ClientSize.Width - BORDER_WIDTH)
+            if (!isChildUnderMouse && !Maximized && coords.Y < BorderWidth && coords.X > BorderWidth && coords.X < ClientSize.Width - BorderWidth)
             {
                 _resizeDir = ResizeDirection.Top;
                 Cursor = Cursors.SizeNS;
             }
-            else if (!isChildUnderMouse && !Maximized && coords.X <= BORDER_WIDTH && coords.Y < BORDER_WIDTH)
+            else if (!isChildUnderMouse && !Maximized && coords.X <= BorderWidth && coords.Y < BorderWidth)
             {
                 _resizeDir = ResizeDirection.TopLeft;
                 Cursor = Cursors.SizeNWSE;
             }
-            else if (!isChildUnderMouse && !Maximized && coords.X >= ClientSize.Width - BORDER_WIDTH && coords.Y < BORDER_WIDTH)
+            else if (!isChildUnderMouse && !Maximized && coords.X >= ClientSize.Width - BorderWidth && coords.Y < BorderWidth)
             {
                 _resizeDir = ResizeDirection.TopRight;
                 Cursor = Cursors.SizeNESW;
             }
-            else if (!isChildUnderMouse && !Maximized && coords.X <= BORDER_WIDTH && coords.Y >= ClientSize.Height - BORDER_WIDTH)
+            else if (!isChildUnderMouse && !Maximized && coords.X <= BorderWidth && coords.Y >= ClientSize.Height - BorderWidth)
             {
                 _resizeDir = ResizeDirection.BottomLeft;
                 Cursor = Cursors.SizeNESW;
             }
-            else if ((!isChildUnderMouse || DrawerTabControl != null) && !Maximized && coords.X <= BORDER_WIDTH)
+            else if ((!isChildUnderMouse || DrawerTabControl != null) && !Maximized && coords.X <= BorderWidth)
             {
                 _resizeDir = ResizeDirection.Left;
                 Cursor = Cursors.SizeWE;
             }
-            else if (!isChildUnderMouse && !Maximized && coords.X >= ClientSize.Width - BORDER_WIDTH && coords.Y >= ClientSize.Height - BORDER_WIDTH)
+            else if (!isChildUnderMouse && !Maximized && coords.X >= ClientSize.Width - BorderWidth && coords.Y >= ClientSize.Height - BorderWidth)
             {
                 _resizeDir = ResizeDirection.BottomRight;
                 Cursor = Cursors.SizeNWSE;
             }
-            else if (!isChildUnderMouse && !Maximized && coords.X >= ClientSize.Width - BORDER_WIDTH)
+            else if (!isChildUnderMouse && !Maximized && coords.X >= ClientSize.Width - BorderWidth)
             {
                 _resizeDir = ResizeDirection.Right;
                 Cursor = Cursors.SizeWE;
             }
-            else if (!isChildUnderMouse && !Maximized && coords.Y >= ClientSize.Height - BORDER_WIDTH)
+            else if (!isChildUnderMouse && !Maximized && coords.Y >= ClientSize.Height - BorderWidth)
             {
                 _resizeDir = ResizeDirection.Bottom;
                 Cursor = Cursors.SizeNS;
@@ -986,6 +1014,60 @@ namespace MaterialSkin.Controls
 
             base.OnMouseUp(e);
             ReleaseCapture();
+        }
+
+        protected override void OnLoad(EventArgs args)
+        {
+            base.OnLoad(args);
+
+            OnResizeControls(this);
+        }
+
+        private void OnResizeControls(Control c, bool resizeThis = false)
+        {
+            SuspendLayout();
+            if (resizeThis)
+            {
+                // additionally may check c.AutoSize? don't know how that works
+                if (c.Dock != DockStyle.None)
+                {
+                    // resize and leave the rest to the framework
+                    c.Size = new Size(dpiAdjust(c.Width), dpiAdjust(c.Height));
+                }
+                else if (c.Anchor != AnchorStyles.None)
+                {
+                    // recalc position and size relative to bounds
+                    Rectangle rect = c.Bounds;
+                    int left = rect.Left, top = rect.Top, right = rect.Right, bottom = rect.Bottom;
+                    if ((c.Anchor & AnchorStyles.Left) != 0)
+                        left = dpiAdjust(rect.Left);
+                    if ((c.Anchor & AnchorStyles.Top) != 0)
+                        top = dpiAdjust(rect.Top);
+                    if ((c.Anchor & AnchorStyles.Right) != 0)
+                        right = c.Width-dpiAdjust(c.Width-rect.Right);
+                    if ((c.Anchor & AnchorStyles.Bottom) != 0)
+                        bottom = c.Height-dpiAdjust(c.Height-rect.Bottom);
+                    c.Bounds = new Rectangle(left, top, right - left, bottom - top);
+                }
+                else
+                {
+                    // ???
+                }
+            }
+            List<Control> controls = new List<Control>(c.Controls.OfType<Control>());
+            while (controls.Count > 0)
+            {
+                Control ctr = controls[0];
+                if (ctr.Controls.Count > 0)
+                    controls.AddRange(ctr.Controls.Cast<Control>());
+                ctr.Location = new Point(dpiAdjust(ctr.Location.X), dpiAdjust(ctr.Location.Y));
+                ctr.Size = new Size(dpiAdjust(ctr.Size.Width), dpiAdjust(ctr.Size.Height));
+                ControlEventHandler AddControlHandler = (s,ev) => OnResizeControls(ev.Control, true);
+                ctr.ControlAdded += AddControlHandler;
+                ctr.ControlRemoved += (s,e) => e.Control.ControlAdded -= AddControlHandler;
+                controls.RemoveAt(0);
+            }
+            ResumeLayout(true);
         }
 
         protected override void OnPaint(PaintEventArgs e)
