@@ -1028,31 +1028,11 @@ namespace MaterialSkin.Controls
             SuspendLayout();
             if (resizeThis)
             {
-                // additionally may check c.AutoSize? don't know how that works
-                if (c.Dock != DockStyle.None)
-                {
-                    // resize and leave the rest to the framework
-                    c.Size = new Size(dpiAdjust(c.Width), dpiAdjust(c.Height));
-                }
-                else if (c.Anchor != AnchorStyles.None)
-                {
-                    // recalc position and size relative to bounds
-                    Rectangle rect = c.Bounds;
-                    int left = rect.Left, top = rect.Top, right = rect.Right, bottom = rect.Bottom;
-                    if ((c.Anchor & AnchorStyles.Left) != 0)
-                        left = dpiAdjust(rect.Left);
-                    if ((c.Anchor & AnchorStyles.Top) != 0)
-                        top = dpiAdjust(rect.Top);
-                    if ((c.Anchor & AnchorStyles.Right) != 0)
-                        right = c.Width-dpiAdjust(c.Width-rect.Right);
-                    if ((c.Anchor & AnchorStyles.Bottom) != 0)
-                        bottom = c.Height-dpiAdjust(c.Height-rect.Bottom);
-                    c.Bounds = new Rectangle(left, top, right - left, bottom - top);
-                }
-                else
-                {
-                    // ???
-                }
+                Rectangle bounds = c.Bounds;
+                c.SetBounds(
+                    dpiAdjust(bounds.X), dpiAdjust(bounds.Y),
+                    dpiAdjust(bounds.Width), dpiAdjust(bounds.Height)
+                    );
             }
             List<Control> controls = new List<Control>(c.Controls.OfType<Control>());
             while (controls.Count > 0)
@@ -1067,7 +1047,7 @@ namespace MaterialSkin.Controls
                 ctr.ControlRemoved += (s,e) => e.Control.ControlAdded -= AddControlHandler;
                 controls.RemoveAt(0);
             }
-            ResumeLayout(true);
+            ResumeLayout();
         }
 
         protected override void OnPaint(PaintEventArgs e)
