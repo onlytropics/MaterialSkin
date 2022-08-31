@@ -393,11 +393,11 @@
                 case fontType.H2:
                     return createLogicalFont("Roboto Light", 60, NativeTextRenderer.logFontWeight.FW_LIGHT, 0, dpi);
                 case fontType.H3:
-                    return createLogicalFont("Roboto", 48, NativeTextRenderer.logFontWeight.FW_BOLD, 0, dpi);
+                    return createLogicalFont("Roboto", 48, NativeTextRenderer.logFontWeight.FW_REGULAR, 0, dpi);
                 case fontType.H4:
-                    return createLogicalFont("Roboto", 34, NativeTextRenderer.logFontWeight.FW_BOLD, 0, dpi);
+                    return createLogicalFont("Roboto", 34, NativeTextRenderer.logFontWeight.FW_REGULAR, 0, dpi);
                 case fontType.H5:
-                    return createLogicalFont("Roboto", 24, NativeTextRenderer.logFontWeight.FW_BOLD, 0, dpi);
+                    return createLogicalFont("Roboto", 24, NativeTextRenderer.logFontWeight.FW_REGULAR, 0, dpi);
                 case fontType.H6:
                     return createLogicalFont("Roboto Medium", 20, NativeTextRenderer.logFontWeight.FW_MEDIUM, 0, dpi);
                 case fontType.Subtitle1:
