@@ -3,6 +3,7 @@
     using MaterialSkin.Animations;
     using System;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
@@ -10,6 +11,12 @@
     [System.ComponentModel.DesignerCategory("")]
     public class MaterialFloatingActionButton : Button, IMaterialControl
     {
+        #region DPI-Awareness
+        private float dpiMultiplicator;
+        protected int dpiAdjust(int value) => (int) Math.Round(value * dpiMultiplicator);
+        protected float dpiAdjust(float value) => value * dpiMultiplicator;
+        #endregion
+
         [Browsable(false)]
         public int Depth { get; set; }
 
@@ -24,6 +31,11 @@
         private const int FAB_ICON_MARGIN = 16;
         private const int FAB_MINI_ICON_MARGIN = 8;
         private const int FAB_ICON_SIZE = 24;
+        private int FabSize;
+        private int FabMiniSize;
+        private int FabIconMargin;
+        private int FabMiniIconMargin;
+        private int FabIconSize;
 
         private Boolean _mouseHover = false;
 
@@ -77,6 +89,24 @@
 
         public MaterialFloatingActionButton()
         {
+            dpiMultiplicator = DeviceDpi/96f;
+            FabSize = dpiAdjust(FAB_SIZE);
+            FabMiniSize = dpiAdjust(FAB_MINI_SIZE);
+            FabIconMargin = dpiAdjust(FAB_ICON_MARGIN);
+            FabMiniIconMargin = dpiAdjust(FAB_MINI_ICON_MARGIN);
+            FabIconSize = dpiAdjust(FAB_ICON_SIZE);
+
+            LocationChanged += (s,e) =>
+            {
+                System.Diagnostics.Debug.WriteLine($"Location changed to {Location}");
+                StackTrace stackTrace = new StackTrace();
+                StackFrame[] stackFrames = stackTrace.GetFrames();
+                foreach (StackFrame stackFrame in stackFrames)
+                  {
+                    Debug.WriteLine($"  > {stackFrame.GetMethod().Name} [{stackFrame.GetFileName()}:{stackFrame.GetFileLineNumber()}]");
+                  }
+            };
+
             AnimateShowHideButton = false;
             Mini = false;
             DrawShadows = true;
@@ -145,8 +175,8 @@
         private void setSize(bool mini)
         {
             _mini = mini;
-            Size = _mini ? new Size(FAB_MINI_SIZE, FAB_MINI_SIZE) : new Size(FAB_SIZE, FAB_SIZE);
-            fabBounds = _mini ? new Rectangle(0, 0, FAB_MINI_SIZE, FAB_MINI_SIZE) : new Rectangle(0, 0, FAB_SIZE, FAB_SIZE);
+            Size = _mini ? new Size(FabMiniSize, FabMiniSize) : new Size(FabSize, FabSize);
+            fabBounds = _mini ? new Rectangle(0, 0, FabMiniSize, FabMiniSize) : new Rectangle(0, 0, FabSize, FabSize);
             fabBounds.Width -= 1;
             fabBounds.Height -= 1;
         }
@@ -217,16 +247,16 @@
 
             if (Icon != null)
             {
-                g.DrawImage(Icon, new Rectangle(fabBounds.Width / 2 - 11, fabBounds.Height / 2 - 11, 24, 24));
+                g.DrawImage(Icon, new Rectangle(fabBounds.Width / 2 - dpiAdjust(11), fabBounds.Height / 2 - dpiAdjust(11), FabIconSize, FabIconSize));
             }
 
             if (_showAnimationManager.IsAnimating())
             {
-                int target = Convert.ToInt32((_mini ? FAB_MINI_SIZE : FAB_SIZE) * _showAnimationManager.GetProgress());
+                int target = Convert.ToInt32((_mini ? FabMiniSize : FabSize) * _showAnimationManager.GetProgress());
                 fabBounds.Width = target == 0 ? 1 : target;
                 fabBounds.Height = target == 0 ? 1 : target;
-                fabBounds.X = Convert.ToInt32(((_mini ? FAB_MINI_SIZE : FAB_SIZE) / 2) - (((_mini ? FAB_MINI_SIZE : FAB_SIZE) / 2) * _showAnimationManager.GetProgress()));
-                fabBounds.Y = Convert.ToInt32(((_mini ? FAB_MINI_SIZE : FAB_SIZE) / 2) - (((_mini ? FAB_MINI_SIZE : FAB_SIZE) / 2) * _showAnimationManager.GetProgress()));
+                fabBounds.X = Convert.ToInt32(((_mini ? FabMiniSize : FabSize) / 2) - (((_mini ? FabMiniSize : FabSize) / 2) * _showAnimationManager.GetProgress()));
+                fabBounds.Y = Convert.ToInt32(((_mini ? FabMiniSize : FabSize) / 2) - (((_mini ? FabMiniSize : FabSize) / 2) * _showAnimationManager.GetProgress()));
             }
 
             // Clip to a round shape with a 1px padding
