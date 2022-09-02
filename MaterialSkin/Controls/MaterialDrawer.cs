@@ -13,12 +13,13 @@
     public class MaterialDrawer : Control, IMaterialControl
     {
         // TODO: Invalidate when changing custom properties
-
         private bool _showIconsWhenHidden;
+        #region DPI-Awareness
         private float dpiMultiplicator;
 
         private int dpiAdjust(int value) => (int) Math.Round(value * dpiMultiplicator);
         private float dpiAdjust(float value) => value * dpiMultiplicator;
+        #endregion
 
         [Category("Drawer")]
         public bool ShowIconsWhenHidden
@@ -59,6 +60,9 @@
                     Hide();
             }
         }
+
+        public int DrawerWidth;
+        private int paintWidth;
 
         [Category("Drawer")]
         public bool AutoHide { get; set; }
@@ -409,33 +413,36 @@
 
         private void showHideAnimation()
         {
+            Form par = Parent as Form;
+            if (par == null) return;
+            
             var showHideAnimProgress = _showHideAnimManager.GetProgress();
             if (_showHideAnimManager.IsAnimating())
             {
                 if (ShowIconsWhenHidden)
                 {
-                    Location = new Point((int)((-Width + MinWidth) * showHideAnimProgress), Location.Y);
+                    par.Width = DrawerWidth + (int)((-DrawerWidth + MinWidth) * showHideAnimProgress);
                 }
                 else
                 {
-                    Location = new Point((int)(-Width * showHideAnimProgress), Location.Y);
+                    par.Width = DrawerWidth + (int)(-DrawerWidth * showHideAnimProgress);
                 }
             }
             else
             {
                 if (_isOpen)
                 {
-                    Location = new Point(0, Location.Y);
+                    par.Width = DrawerWidth;
                 }
                 else
                 {
                     if (ShowIconsWhenHidden)
                     {
-                        Location = new Point((int)(-Width + MinWidth), Location.Y);
+                        par.Width = DrawerWidth + (int)(-DrawerWidth + MinWidth);
                     }
                     else
                     {
-                        Location = new Point(-Width, Location.Y);
+                        par.Width = 0;
                     }
                 }
             }
@@ -542,7 +549,7 @@
             {
                 using (Pen dividerPen = new Pen(SkinManager.DividersColor, 1))
                 {
-                    g.DrawLine(dividerPen, Width - 1, 0, Width - 1, Height);
+                    g.DrawLine(dividerPen, paintWidth - 1, 0, paintWidth - 1, Height);
                 }
             }
 
@@ -768,15 +775,20 @@
             }
 
             //Calculate the bounds of each tab header specified in the base tab control
+            Form parent = Parent as Form;
+            if (parent == null) return;
+            paintWidth = parent.Width;
+            int x = (int)dpiAdjust(SkinManager.FORM_PADDING * 0.75f) - (ShowIconsWhenHidden ? Location.X : 0);
+            int w = dpiAdjust((parent.Width + (ShowIconsWhenHidden ? Location.X : 0)) - (int)(SkinManager.FORM_PADDING * 1.5f) - 1);
             for (int i = 0; i < _baseTabControl.TabPages.Count; i++)
             {
                 _drawerItemRects[i] = (new Rectangle(
-                    (int)dpiAdjust(SkinManager.FORM_PADDING * 0.75f) - (ShowIconsWhenHidden ? Location.X : 0),
-                    dpiAdjust((TAB_HEADER_PADDING * 2) * i + (int)(SkinManager.FORM_PADDING >> 1)),
-                    dpiAdjust((Width + (ShowIconsWhenHidden ? Location.X : 0)) - (int)(SkinManager.FORM_PADDING * 1.5f) - 1),
-                    drawerItemHeight));
+                    x, dpiAdjust((TAB_HEADER_PADDING * 2) * i + (int)(SkinManager.FORM_PADDING >> 1)),
+                    w, drawerItemHeight));
 
-                _drawerItemPaths[i] = DrawHelper.CreateRoundRect(new RectangleF(_drawerItemRects[i].X - 0.5f, _drawerItemRects[i].Y - 0.5f, _drawerItemRects[i].Width, _drawerItemRects[i].Height), 4);
+                _drawerItemPaths[i] = DrawHelper.CreateRoundRect(new RectangleF(
+                    x-0.5f, _drawerItemRects[i].Y-0.5f, w, drawerItemHeight
+                    ), dpiAdjust(4));
             }
         }
     }

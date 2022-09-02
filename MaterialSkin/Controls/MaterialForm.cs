@@ -508,7 +508,7 @@ namespace MaterialSkin.Controls
             drawerOverlay.ShowIcon = false;
             drawerOverlay.ControlBox = false;
             drawerOverlay.FormBorderStyle = FormBorderStyle.None;
-            drawerOverlay.Visible = true;
+            drawerOverlay.Visible = false;
             drawerOverlay.Size = new Size(ClientSize.Width, H);
             drawerOverlay.Location = new Point(PointToScreen(Point.Empty).X, Y);
             drawerOverlay.ShowInTaskbar = false;
@@ -516,8 +516,8 @@ namespace MaterialSkin.Controls
             drawerOverlay.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
 
             // Drawer Form definitions
-            drawerForm.BackColor = Color.LimeGreen;
-            drawerForm.TransparencyKey = Color.LimeGreen;
+            drawerForm.BackColor = Color.Lime; //SystemColors.Control;
+            //drawerForm.TransparencyKey=Color.LimeGreen;
             drawerForm.MinimizeBox = false;
             drawerForm.MaximizeBox = false;
             drawerForm.Text = "";
@@ -538,6 +538,8 @@ namespace MaterialSkin.Controls
             drawerControl.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom);
             drawerControl.BaseTabControl = DrawerTabControl;
             drawerControl.ShowIconsWhenHidden = true;
+            drawerControl.DrawerWidth = DrawerWidth;
+            drawerControl.Anchor = AnchorStyles.Right | AnchorStyles.Left;
 
             // Init Options
             drawerControl.IsOpen = DrawerIsOpen;
@@ -562,21 +564,21 @@ namespace MaterialSkin.Controls
             VisibleChanged += (sender, e) =>
             {
                 drawerForm.Visible = Visible;
-                drawerOverlay.Visible = Visible;
+                //drawerOverlay.Visible = Visible;
             };
 
             Resize += (sender, e) =>
             {
                 H = ClientSize.Height - _statusBarBounds.Height - _actionBarBounds.Height;
                 drawerForm.Size = new Size(DrawerWidth, H);
-                drawerOverlay.Size = new Size(ClientSize.Width, H);
+                //drawerOverlay.Size = new Size(ClientSize.Width, H);
             };
 
             Move += (sender, e) =>
             {
                 Point pos = new Point(PointToScreen(Point.Empty).X, PointToScreen(Point.Empty).Y + _statusBarBounds.Height + _actionBarBounds.Height);
                 drawerForm.Location = pos;
-                drawerOverlay.Location = pos;
+                //drawerOverlay.Location = pos;
             };
 
             // Close when click outside menu
@@ -1315,7 +1317,7 @@ namespace MaterialSkin.Controls
         public MaterialDrawerForm()
         {
             MouseWheelRedirector = new MouseWheelRedirector();
-            SetStyle(ControlStyles.Selectable | ControlStyles.OptimizedDoubleBuffer | ControlStyles.EnableNotifyMessage, true);
+            SetStyle(ControlStyles.Selectable | ControlStyles.OptimizedDoubleBuffer | ControlStyles.EnableNotifyMessage | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
         }
 
         public void Attach(Control control)
@@ -1327,5 +1329,12 @@ namespace MaterialSkin.Controls
         {
             MouseWheelRedirector.Detach(control);
         }
+
+        protected override void OnPaint(PaintEventArgs e)
+        { }
+
+        protected override void OnPaintBackground(PaintEventArgs e)
+        { }
+
     }
 }
