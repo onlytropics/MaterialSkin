@@ -3,6 +3,7 @@
     using System.ComponentModel;
     using System.Windows.Forms;
 
+    [System.ComponentModel.DesignerCategory("")]
     public sealed class MaterialDivider : Control, IMaterialControl
     {
         [Browsable(false)]

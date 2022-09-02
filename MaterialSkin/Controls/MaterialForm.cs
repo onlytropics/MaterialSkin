@@ -14,6 +14,7 @@ namespace MaterialSkin.Controls
     using System.Runtime.Remoting.Channels;
     #endif
 
+    [System.ComponentModel.DesignerCategory("")]
     public class MaterialForm : Form, IMaterialControl
     {
         #region Public Properties

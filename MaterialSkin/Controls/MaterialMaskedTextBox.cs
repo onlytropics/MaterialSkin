@@ -8,6 +8,7 @@
     using System.Windows.Forms;
     using MaterialSkin.Animations;
 
+    [System.ComponentModel.DesignerCategory("")]
     public class MaterialMaskedTextBox : Control, IMaterialControl
     {
 

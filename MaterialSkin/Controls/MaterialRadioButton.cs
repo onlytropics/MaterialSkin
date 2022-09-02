@@ -8,6 +8,7 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
+    [System.ComponentModel.DesignerCategory("")]
     public class MaterialRadioButton : RadioButton, IMaterialControl
     {
         [Browsable(false)]

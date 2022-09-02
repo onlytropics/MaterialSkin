@@ -6,6 +6,7 @@ using System.Windows.Forms;
 
 namespace MaterialSkin.Controls
 {
+    [System.ComponentModel.DesignerCategory("")]
     public class MaterialSlider : Control, IMaterialControl
     {
         #region "Private members"

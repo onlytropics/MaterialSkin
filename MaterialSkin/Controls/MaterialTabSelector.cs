@@ -9,6 +9,7 @@
     using System.Globalization;
     using System.Windows.Forms;
 
+    [System.ComponentModel.DesignerCategory("")]
     public class MaterialTabSelector : Control, IMaterialControl
     {
         [Browsable(false)]

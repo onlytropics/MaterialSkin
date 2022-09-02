@@ -7,6 +7,7 @@
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
 
+    [System.ComponentModel.DesignerCategory("")]
     public class MaterialFloatingActionButton : Button, IMaterialControl
     {
         [Browsable(false)]

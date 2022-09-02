@@ -16,6 +16,7 @@ namespace MaterialSkin.Controls
         Vertical
     }
 
+    [System.ComponentModel.DesignerCategory("")]
     [DefaultEvent("Scroll")]
     [DefaultProperty("Value")]
     public class MaterialScrollBar : Control, IMaterialControl

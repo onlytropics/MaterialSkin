@@ -6,6 +6,7 @@
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
 
+    [System.ComponentModel.DesignerCategory("")]
     public class MaterialCard : Panel, IMaterialControl
     {
         private float dpiMultiplicator;

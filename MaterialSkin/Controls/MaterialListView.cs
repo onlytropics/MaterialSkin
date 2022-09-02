@@ -5,6 +5,7 @@
     using System.Drawing;
     using System.Windows.Forms;
 
+    [System.ComponentModel.DesignerCategory("")]
     public class MaterialListView : ListView, IMaterialControl
     {
         [Browsable(false)]

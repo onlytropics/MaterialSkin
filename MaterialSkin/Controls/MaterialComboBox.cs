@@ -8,6 +8,7 @@
     using System.Data;
     using System.Windows.Forms;
 
+    [System.ComponentModel.DesignerCategory("")]
     public class MaterialComboBox : ComboBox, IMaterialControl
     {
         #region DPI-Awareness

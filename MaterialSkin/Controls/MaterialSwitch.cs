@@ -8,6 +8,7 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
+    [System.ComponentModel.DesignerCategory("")]
     public class MaterialSwitch : CheckBox, IMaterialControl
     {
         [Browsable(false)]

@@ -8,6 +8,7 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
+    [System.ComponentModel.DesignerCategory("")]
     public class MaterialCheckbox : CheckBox, IMaterialControl
     {
         #region Public properties

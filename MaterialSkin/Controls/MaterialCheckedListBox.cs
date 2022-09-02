@@ -5,6 +5,7 @@
     using System.Drawing;
     using System.Windows.Forms;
 
+    [System.ComponentModel.DesignerCategory("")]
     public class MaterialCheckedListBox : Panel, IMaterialControl
     {
         [Browsable(false)]

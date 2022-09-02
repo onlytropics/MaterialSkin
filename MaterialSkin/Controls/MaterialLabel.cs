@@ -4,6 +4,7 @@
     using System.Drawing;
     using System.Windows.Forms;
 
+    [System.ComponentModel.DesignerCategory("")]
     public class MaterialLabel : Label, IMaterialControl
     {
         [Browsable(false)]

@@ -5,6 +5,7 @@
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
 
+    [System.ComponentModel.DesignerCategory("")]
     public class MaterialMultiLineTextBox : RichTextBox, IMaterialControl
     {
         //Properties for managing the material design properties

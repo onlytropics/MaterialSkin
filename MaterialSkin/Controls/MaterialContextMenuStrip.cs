@@ -7,6 +7,7 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
+    [System.ComponentModel.DesignerCategory("")]
     [ToolboxItem(false)]
     public class MaterialContextMenuStrip : ContextMenuStrip, IMaterialControl
     {

@@ -8,6 +8,7 @@ namespace MaterialSkin.Controls
     using System.Windows.Forms;
     using MaterialSkin.Animations;
 
+    [System.ComponentModel.DesignerCategory("")]
     public class MaterialTextBox2 : Control, IMaterialControl
     {
         private float dpiMultiplicator;

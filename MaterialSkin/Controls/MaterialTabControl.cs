@@ -4,6 +4,7 @@
     using System.ComponentModel;
     using System.Windows.Forms;
 
+    [System.ComponentModel.DesignerCategory("")]
     public class MaterialTabControl : TabControl, IMaterialControl
     {
         public MaterialTabControl()

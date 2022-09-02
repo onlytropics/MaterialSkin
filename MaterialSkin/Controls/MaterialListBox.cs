@@ -22,6 +22,7 @@ namespace MaterialSkin.Controls
     [DefaultProperty("Items")]
     [DefaultEvent("SelectedIndexChanged")]
     [ComVisible(true)]
+    [System.ComponentModel.DesignerCategory("")]
     public class MaterialListBox : Control, IMaterialControl
     {
         #region Internal Vars

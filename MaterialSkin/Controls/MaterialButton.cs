@@ -13,6 +13,7 @@
     /// <summary>
     /// Defines the <see cref="MaterialButton" />
     /// </summary>
+    [System.ComponentModel.DesignerCategory("")]
     public class MaterialButton : Button, IMaterialControl
     {
 

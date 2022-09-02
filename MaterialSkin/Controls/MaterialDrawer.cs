@@ -10,6 +10,7 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
+    [System.ComponentModel.DesignerCategory("")]
     public class MaterialDrawer : Control, IMaterialControl
     {
         // TODO: Invalidate when changing custom properties

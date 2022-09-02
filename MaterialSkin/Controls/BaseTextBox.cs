@@ -5,6 +5,7 @@ namespace MaterialSkin.Controls
     using System.Drawing;
     using System.Windows.Forms;
 
+    [System.ComponentModel.DesignerCategory("")]
     [ToolboxItem(false)]
     public class BaseTextBox : TextBox, IMaterialControl
     {
