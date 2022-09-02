@@ -10,6 +10,12 @@
 
     public class MaterialComboBox : ComboBox, IMaterialControl
     {
+        #region DPI-Awareness
+        private float dpiMultiplicator;
+        protected int dpiAdjust(int value) => (int) Math.Round(value * dpiMultiplicator);
+        protected float dpiAdjust(float value) => value * dpiMultiplicator;
+        #endregion
+
         // For some reason, even when overriding the AutoSize property, it doesn't appear on the properties panel, so we have to create a new one.
         [Browsable(true), EditorBrowsable(EditorBrowsableState.Always), Category("Layout")]
         private bool _AutoResize;
@@ -86,6 +92,13 @@
         private const int TEXT_SMALL_SIZE = 18;
         private const int TEXT_SMALL_Y = 4;
         private const int BOTTOM_PADDING = 3;
+
+        #region constants adjusted for dpi
+        private int TextSmallSize;
+        private int TextSmallY;
+        private int BottomPadding;
+        #endregion
+
         private int HEIGHT = 50;
         private int LINE_Y;
 
@@ -95,6 +108,12 @@
 
         public MaterialComboBox()
         {
+            dpiMultiplicator = DeviceDpi/96f;
+            TextSmallSize = dpiAdjust(TEXT_SMALL_SIZE);
+            TextSmallY = dpiAdjust(TEXT_SMALL_Y);
+            BottomPadding = dpiAdjust(BOTTOM_PADDING);
+            HEIGHT = dpiAdjust(HEIGHT);
+
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
 
             // Material Properties
@@ -103,7 +122,7 @@
             UseTallSize = true;
             MaxDropDownItems = 4;
 
-            Font = SkinManager.getFontByType(MaterialSkinManager.fontType.Subtitle2);
+            Font = SkinManager.getFontByType(MaterialSkinManager.fontType.Subtitle2, DeviceDpi);
             BackColor = SkinManager.BackgroundColor;
             ForeColor = SkinManager.TextHighEmphasisColor;
             DrawMode = DrawMode.OwnerDrawVariable;
@@ -184,9 +203,10 @@
 
             // Create and Draw the arrow
             System.Drawing.Drawing2D.GraphicsPath pth = new System.Drawing.Drawing2D.GraphicsPath();
-            PointF TopRight = new PointF(this.Width - 0.5f - SkinManager.FORM_PADDING, (this.Height >> 1) - 2.5f);
-            PointF MidBottom = new PointF(this.Width - 4.5f - SkinManager.FORM_PADDING, (this.Height >> 1) + 2.5f);
-            PointF TopLeft = new PointF(this.Width - 8.5f - SkinManager.FORM_PADDING, (this.Height >> 1) - 2.5f);
+            float FormPadding = dpiAdjust((float)SkinManager.FORM_PADDING);
+            PointF TopRight = new PointF(this.Width - dpiAdjust(0.5f) - FormPadding, (this.Height >> 1) - dpiAdjust(2.5f));
+            PointF MidBottom = new PointF(this.Width - dpiAdjust(4.5f) - FormPadding, (this.Height >> 1) + dpiAdjust(2.5f));
+            PointF TopLeft = new PointF(this.Width - dpiAdjust(8.5f) - FormPadding, (this.Height >> 1) - dpiAdjust(2.5f));
             pth.AddLine(TopLeft, TopRight);
             pth.AddLine(TopRight, MidBottom);
 
@@ -200,7 +220,7 @@
 
             // HintText
             bool userTextPresent = SelectedIndex >= 0;
-            Rectangle hintRect = new Rectangle(SkinManager.FORM_PADDING, ClientRectangle.Y, Width, LINE_Y);
+            Rectangle hintRect = new Rectangle((int)FormPadding, ClientRectangle.Y, Width, LINE_Y);
             int hintTextSize = 16;
 
             // bottom line base
@@ -212,7 +232,7 @@
                 if (hasHint && UseTallSize && (DroppedDown || Focused || SelectedIndex >= 0))
                 {
                     // hint text
-                    hintRect = new Rectangle(SkinManager.FORM_PADDING, TEXT_SMALL_Y, Width, TEXT_SMALL_SIZE);
+                    hintRect = new Rectangle((int)FormPadding, TextSmallY, Width, TextSmallSize);
                     hintTextSize = 12;
                 }
 
@@ -231,10 +251,10 @@
                 if (hasHint && UseTallSize)
                 {
                     hintRect = new Rectangle(
-                        SkinManager.FORM_PADDING,
-                        userTextPresent && !_animationManager.IsAnimating() ? (TEXT_SMALL_Y) : ClientRectangle.Y + (int)((TEXT_SMALL_Y - ClientRectangle.Y) * animationProgress),
+                        (int)FormPadding,
+                        userTextPresent && !_animationManager.IsAnimating() ? (TextSmallY) : ClientRectangle.Y + (int)((TextSmallY - ClientRectangle.Y) * animationProgress),
                         Width,
-                        userTextPresent && !_animationManager.IsAnimating() ? (TEXT_SMALL_SIZE) : (int)(LINE_Y + (TEXT_SMALL_SIZE - LINE_Y) * animationProgress));
+                        userTextPresent && !_animationManager.IsAnimating() ? (TextSmallSize) : (int)(LINE_Y + (TextSmallSize - LINE_Y) * animationProgress));
                     hintTextSize = userTextPresent && !_animationManager.IsAnimating() ? 12 : (int)(16 + (12 - 16) * animationProgress);
                 }
 
@@ -246,9 +266,9 @@
 
             // Calc text Rect
             Rectangle textRect = new Rectangle(
-                SkinManager.FORM_PADDING,
-                hasHint && UseTallSize ? (hintRect.Y + hintRect.Height) - 2 : ClientRectangle.Y,
-                ClientRectangle.Width - SkinManager.FORM_PADDING * 3 - 8,
+                (int)FormPadding,
+                hasHint && UseTallSize ? (hintRect.Y + hintRect.Height) - dpiAdjust(2) : ClientRectangle.Y,
+                ClientRectangle.Width - (int)FormPadding * 3 - dpiAdjust(8),
                 hasHint && UseTallSize ? LINE_Y - (hintRect.Y + hintRect.Height) : LINE_Y);
 
             g.Clip = new Region(textRect);
@@ -258,7 +278,7 @@
                 // Draw user text
                 NativeText.DrawTransparentText(
                     Text,
-                    SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1),
+                    SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1, DeviceDpi),
                     Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
                     textRect.Location,
                     textRect.Size,
@@ -274,7 +294,7 @@
                 {
                     NativeText.DrawTransparentText(
                     Hint,
-                    SkinManager.getTextBoxFontBySize(hintTextSize),
+                    SkinManager.getTextBoxFontBySize(hintTextSize, DeviceDpi),
                     Enabled ? DroppedDown || Focused ? 
                     SelectedColor : // Focus 
                     SkinManager.TextMediumEmphasisColor : // not focused
@@ -288,7 +308,7 @@
 
         private void CustomMeasureItem(object sender, System.Windows.Forms.MeasureItemEventArgs e)
         {
-            e.ItemHeight = HEIGHT - 7;
+            e.ItemHeight = HEIGHT - dpiAdjust(7);
         }
 
         private void CustomDrawItem(object sender, System.Windows.Forms.DrawItemEventArgs e)
@@ -325,14 +345,15 @@
                 Text = Items[e.Index].ToString();
             }
 
+            float FormPadding = dpiAdjust((float)SkinManager.FORM_PADDING);
             using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
             {
                 NativeText.DrawTransparentText(
                 Text,
-                SkinManager.getFontByType(MaterialSkinManager.fontType.Subtitle1),
+                SkinManager.getFontByType(MaterialSkinManager.fontType.Subtitle1, DeviceDpi),
                 SkinManager.TextHighEmphasisNoAlphaColor,
-                new Point(e.Bounds.Location.X + SkinManager.FORM_PADDING, e.Bounds.Location.Y),
-                new Size(e.Bounds.Size.Width - SkinManager.FORM_PADDING * 2, e.Bounds.Size.Height),
+                new Point(e.Bounds.Location.X + (int)FormPadding, e.Bounds.Location.Y),
+                new Size(e.Bounds.Size.Width - (int)FormPadding * 2, e.Bounds.Size.Height),
                 NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle); ;
             }
         }
@@ -358,11 +379,11 @@
 
         private void setHeightVars()
         {
-            HEIGHT = UseTallSize ? 50 : 36;
+            HEIGHT = dpiAdjust(UseTallSize ? 50 : 36);
             Size = new Size(Size.Width, HEIGHT);
-            LINE_Y = HEIGHT - BOTTOM_PADDING;
-            ItemHeight = HEIGHT - 7;
-            DropDownHeight = ItemHeight * MaxDropDownItems + 2;
+            LINE_Y = HEIGHT - BottomPadding;
+            ItemHeight = HEIGHT - dpiAdjust(7);
+            DropDownHeight = ItemHeight * MaxDropDownItems + dpiAdjust(2);
         }
 
         public void recalculateAutoSize()
@@ -370,7 +391,7 @@
             if (!AutoResize) return;
 
             int w = DropDownWidth;
-            int padding = SkinManager.FORM_PADDING * 3;
+            int padding = dpiAdjust(SkinManager.FORM_PADDING * 3);
             int vertScrollBarWidth = (Items.Count > MaxDropDownItems) ? SystemInformation.VerticalScrollBarWidth : 0;
 
             Graphics g = CreateGraphics();
@@ -379,7 +400,7 @@
                 var itemsList = this.Items.Cast<object>().Select(item => item.ToString());
                 foreach (string s in itemsList)
                 {
-                    int newWidth = NativeText.MeasureLogString(s, SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1)).Width + vertScrollBarWidth + padding;
+                    int newWidth = NativeText.MeasureLogString(s, SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1, DeviceDpi)).Width + vertScrollBarWidth + padding;
                     if (w < newWidth) w = newWidth;
                 }
             }
