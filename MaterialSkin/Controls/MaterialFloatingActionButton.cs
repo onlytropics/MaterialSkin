@@ -3,7 +3,6 @@
     using MaterialSkin.Animations;
     using System;
     using System.ComponentModel;
-    using System.Diagnostics;
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
@@ -95,17 +94,6 @@
             FabIconMargin = dpiAdjust(FAB_ICON_MARGIN);
             FabMiniIconMargin = dpiAdjust(FAB_MINI_ICON_MARGIN);
             FabIconSize = dpiAdjust(FAB_ICON_SIZE);
-
-            LocationChanged += (s,e) =>
-            {
-                System.Diagnostics.Debug.WriteLine($"Location changed to {Location}");
-                StackTrace stackTrace = new StackTrace();
-                StackFrame[] stackFrames = stackTrace.GetFrames();
-                foreach (StackFrame stackFrame in stackFrames)
-                  {
-                    Debug.WriteLine($"  > {stackFrame.GetMethod().Name} [{stackFrame.GetFileName()}:{stackFrame.GetFileLineNumber()}]");
-                  }
-            };
 
             AnimateShowHideButton = false;
             Mini = false;
