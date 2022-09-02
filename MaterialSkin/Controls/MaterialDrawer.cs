@@ -413,36 +413,36 @@
 
         private void showHideAnimation()
         {
-            Form par = Parent as Form;
-            if (par == null) return;
+            Form parent = Parent as Form;
+            if (parent == null) return;
             
             var showHideAnimProgress = _showHideAnimManager.GetProgress();
             if (_showHideAnimManager.IsAnimating())
             {
                 if (ShowIconsWhenHidden)
                 {
-                    par.Width = DrawerWidth + (int)((-DrawerWidth + MinWidth) * showHideAnimProgress);
+                    parent.Width = DrawerWidth + (int)((-DrawerWidth + MinWidth) * showHideAnimProgress);
                 }
                 else
                 {
-                    par.Width = DrawerWidth + (int)(-DrawerWidth * showHideAnimProgress);
+                    parent.Width = DrawerWidth + (int)(-DrawerWidth * showHideAnimProgress);
                 }
             }
             else
             {
                 if (_isOpen)
                 {
-                    par.Width = DrawerWidth;
+                    parent.Width = DrawerWidth;
                 }
                 else
                 {
                     if (ShowIconsWhenHidden)
                     {
-                        par.Width = DrawerWidth + (int)(-DrawerWidth + MinWidth);
+                        parent.Width = DrawerWidth + (int)(-DrawerWidth + MinWidth);
                     }
                     else
                     {
-                        par.Width = 0;
+                        parent.Width = 0;
                     }
                 }
             }
@@ -778,8 +778,8 @@
             Form parent = Parent as Form;
             if (parent == null) return;
             paintWidth = parent.Width;
-            int x = (int)dpiAdjust(SkinManager.FORM_PADDING * 0.75f) - (ShowIconsWhenHidden ? Location.X : 0);
-            int w = dpiAdjust((parent.Width + (ShowIconsWhenHidden ? Location.X : 0)) - (int)(SkinManager.FORM_PADDING * 1.5f) - 1);
+            int x = (int)dpiAdjust(SkinManager.FORM_PADDING * 0.75f);
+            int w = paintWidth - dpiAdjust((int)(SkinManager.FORM_PADDING * 1.5f) - 1);
             for (int i = 0; i < _baseTabControl.TabPages.Count; i++)
             {
                 _drawerItemRects[i] = (new Rectangle(
