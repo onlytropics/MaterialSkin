@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using MaterialSkin;
@@ -213,6 +214,7 @@ namespace MaterialSkinExample
             this.materialLabel12 = new MaterialSkin.Controls.MaterialLabel();
             this.materialLabel11 = new MaterialSkin.Controls.MaterialLabel();
             this.materialLabel54 = new MaterialSkin.Controls.MaterialLabel();
+            materialButton59 = new MaterialButton();
             this.menuIconList = new System.Windows.Forms.ImageList(this.components);
             this.materialContextMenuStrip1 = new MaterialSkin.Controls.MaterialContextMenuStrip();
             this.item1ToolStripMenuItem = new MaterialSkin.Controls.MaterialToolStripMenuItem();
@@ -2276,6 +2278,7 @@ namespace MaterialSkinExample
             this.tabPage5.Controls.Add(this.MaterialButton2);
             this.tabPage5.Controls.Add(this.materialProgressBar1);
             this.tabPage5.Controls.Add(this.materialLabel29);
+            this.tabPage5.Controls.Add(materialButton59);
             this.tabPage5.ImageKey = "round_report_problem_white_24dp.png";
             this.tabPage5.Location = new System.Drawing.Point(4, 31);
             this.tabPage5.Name = "tabPage5";
@@ -2378,6 +2381,26 @@ namespace MaterialSkinExample
             this.MaterialButton2.UseAccentColor = false;
             this.MaterialButton2.UseVisualStyleBackColor = true;
             this.MaterialButton2.Click += new System.EventHandler(this.MaterialButton2_Click);
+            // 
+            // MaterialButton59
+            // 
+            this.materialButton59.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.materialButton59.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.materialButton59.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            this.materialButton59.Depth = 0;
+            this.materialButton59.HighEmphasis = false;
+            this.materialButton59.Location = new System.Drawing.Point(755 - 90, 156);
+            this.materialButton59.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.materialButton59.MouseState = MaterialSkin.MouseState.HOVER;
+            this.materialButton59.Name = "materialButton59";
+            this.materialButton59.NoAccentTextColor = System.Drawing.Color.Empty;
+            this.materialButton59.Size = new System.Drawing.Size(78, 36);
+            this.materialButton59.TabIndex = 2;
+            this.materialButton59.Text = "Snackbar";
+            this.materialButton59.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            this.materialButton59.UseAccentColor = false;
+            this.materialButton59.UseVisualStyleBackColor = false;
+            this.materialButton59.Click += new System.EventHandler(this.MaterialButton59_Click);
             // 
             // materialProgressBar1
             // 
@@ -3504,5 +3527,6 @@ namespace MaterialSkinExample
         private MaterialLabel materialLabel57;
         private MaterialSwitch materialSwitch16;
         private MaterialLabel materialLabel58;
+        private MaterialButton materialButton59;
     }
 }

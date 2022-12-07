@@ -2,6 +2,7 @@ using MaterialSkin;
 using MaterialSkin.Controls;
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MaterialSkinExample
@@ -129,6 +130,21 @@ namespace MaterialSkinExample
         private void MaterialButton2_Click(object sender, EventArgs e)
         {
             materialProgressBar1.Value = Math.Min(materialProgressBar1.Value + 10, 100);
+        }
+
+        private async void MaterialButton59_Click(object sender, EventArgs e)
+        {
+            MaterialProgressSnackBar bar = new MaterialProgressSnackBar("Loading data...");
+            int progress = 66;
+            bar.ProgressValue = progress;
+            bar.Show(this);
+            
+            while (progress <= 100) {
+                bar.ProgressValue = progress++;
+                await Task.Delay(100);
+            }
+
+            bar.Close();
         }
 
         private void materialFlatButton4_Click(object sender, EventArgs e)
