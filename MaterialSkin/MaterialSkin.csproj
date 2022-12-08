@@ -66,6 +66,7 @@
     <Compile Include="Controls\BaseTextBox.cs" />
     <Compile Include="Controls\FlexibleMaterialDialog.cs" />
     <Compile Include="Controls\MaterialListBox.cs" />
+    <Compile Include="Controls\MaterialProgressSnackBar.cs" />
     <Compile Include="Controls\MaterialScrollBar.cs" />
     <Compile Include="Controls\MaterialExpansionPanel.cs" />
     <Compile Include="Controls\MaterialSlider.cs" />
