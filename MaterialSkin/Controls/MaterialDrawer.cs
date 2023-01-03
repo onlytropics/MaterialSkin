@@ -10,11 +10,17 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
+    [System.ComponentModel.DesignerCategory("")]
     public class MaterialDrawer : Control, IMaterialControl
     {
         // TODO: Invalidate when changing custom properties
-
         private bool _showIconsWhenHidden;
+        #region DPI-Awareness
+        private float dpiMultiplicator;
+
+        private int dpiAdjust(int value) => (int) Math.Round(value * dpiMultiplicator);
+        private float dpiAdjust(float value) => value * dpiMultiplicator;
+        #endregion
 
         [Category("Drawer")]
         public bool ShowIconsWhenHidden
@@ -55,6 +61,9 @@
                     Hide();
             }
         }
+
+        public int DrawerWidth;
+        private int paintWidth;
 
         [Category("Drawer")]
         public bool AutoHide { get; set; }
@@ -315,9 +324,10 @@
 
         public MaterialDrawer()
         {
+            dpiMultiplicator = this.DeviceDpi / 96f;
             SetStyle(ControlStyles.DoubleBuffer | ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
-            Height = 120;
-            Width = 250;
+            Height = dpiAdjust(120);
+            Width = dpiAdjust(250);
             IndicatorWidth = 0;
             _isOpen = false;
             ShowIconsWhenHidden = false;
@@ -394,8 +404,8 @@
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         protected override void InitLayout()
         {
-            drawerItemHeight = TAB_HEADER_PADDING * 2 - SkinManager.FORM_PADDING / 2;
-            MinWidth = (int)(SkinManager.FORM_PADDING * 1.5 + drawerItemHeight);
+            drawerItemHeight = dpiAdjust(TAB_HEADER_PADDING * 2 - SkinManager.FORM_PADDING / 2);
+            MinWidth = (int) dpiAdjust(SkinManager.FORM_PADDING * 1.5f) + drawerItemHeight;
             _showHideAnimManager.SetProgress(_isOpen ? 0 : 1);
             showHideAnimation();
             Invalidate();
@@ -405,33 +415,36 @@
 
         private void showHideAnimation()
         {
+            Form parent = Parent as Form;
+            if (parent == null) return;
+            
             var showHideAnimProgress = _showHideAnimManager.GetProgress();
             if (_showHideAnimManager.IsAnimating())
             {
                 if (ShowIconsWhenHidden)
                 {
-                    Location = new Point((int)((-Width + MinWidth) * showHideAnimProgress), Location.Y);
+                    parent.Width = DrawerWidth + (int)((-DrawerWidth + MinWidth) * showHideAnimProgress);
                 }
                 else
                 {
-                    Location = new Point((int)(-Width * showHideAnimProgress), Location.Y);
+                    parent.Width = DrawerWidth + (int)(-DrawerWidth * showHideAnimProgress);
                 }
             }
             else
             {
                 if (_isOpen)
                 {
-                    Location = new Point(0, Location.Y);
+                    parent.Width = DrawerWidth;
                 }
                 else
                 {
                     if (ShowIconsWhenHidden)
                     {
-                        Location = new Point((int)(-Width + MinWidth), Location.Y);
+                        parent.Width = DrawerWidth + (int)(-DrawerWidth + MinWidth);
                     }
                     else
                     {
-                        Location = new Point(-Width, Location.Y);
+                        parent.Width = 0;
                     }
                 }
             }
@@ -504,11 +517,11 @@
                     (currentTabIndex == _baseTabControl.SelectedIndex ? (_highlightWithAccent ? SkinManager.ColorScheme.AccentColor : SkinManager.ColorScheme.PrimaryColor) : // selected
                     SkinManager.TextHighEmphasisColor));
 
-                IntPtr textFont = SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle2);
+                IntPtr textFont = SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle2, DeviceDpi);
 
                 Rectangle textRect = _drawerItemRects[currentTabIndex];
-                textRect.X += _baseTabControl.ImageList != null ? drawerItemHeight : (int)(SkinManager.FORM_PADDING * 0.75);
-                textRect.Width -= SkinManager.FORM_PADDING << 2;
+                textRect.X += _baseTabControl.ImageList != null ? drawerItemHeight : (int)dpiAdjust(SkinManager.FORM_PADDING * 0.75f);
+                textRect.Width -= dpiAdjust(SkinManager.FORM_PADDING << 2);
 
                 using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
                 {
@@ -539,7 +552,7 @@
             {
                 using (Pen dividerPen = new Pen(SkinManager.DividersColor, 1))
                 {
-                    g.DrawLine(dividerPen, Width - 1, 0, Width - 1, Height);
+                    g.DrawLine(dividerPen, paintWidth - 1, 0, paintWidth - 1, Height);
                 }
             }
 
@@ -765,15 +778,20 @@
             }
 
             //Calculate the bounds of each tab header specified in the base tab control
+            Form parent = Parent as Form;
+            if (parent == null) return;
+            paintWidth = parent.Width;
+            int x = (int)dpiAdjust(SkinManager.FORM_PADDING * 0.75f);
+            int w = paintWidth - dpiAdjust((int)(SkinManager.FORM_PADDING * 1.5f) - 1);
             for (int i = 0; i < _baseTabControl.TabPages.Count; i++)
             {
                 _drawerItemRects[i] = (new Rectangle(
-                    (int)(SkinManager.FORM_PADDING * 0.75) - (ShowIconsWhenHidden ? Location.X : 0),
-                    (TAB_HEADER_PADDING * 2) * i + (int)(SkinManager.FORM_PADDING >> 1),
-                    (Width + (ShowIconsWhenHidden ? Location.X : 0)) - (int)(SkinManager.FORM_PADDING * 1.5) - 1,
-                    drawerItemHeight));
+                    x, dpiAdjust((TAB_HEADER_PADDING * 2) * i + (int)(SkinManager.FORM_PADDING >> 1)),
+                    w, drawerItemHeight));
 
-                _drawerItemPaths[i] = DrawHelper.CreateRoundRect(new RectangleF(_drawerItemRects[i].X - 0.5f, _drawerItemRects[i].Y - 0.5f, _drawerItemRects[i].Width, _drawerItemRects[i].Height), 4);
+                _drawerItemPaths[i] = DrawHelper.CreateRoundRect(new RectangleF(
+                    x-0.5f, _drawerItemRects[i].Y-0.5f, w, drawerItemHeight
+                    ), dpiAdjust(4));
             }
         }
     }
