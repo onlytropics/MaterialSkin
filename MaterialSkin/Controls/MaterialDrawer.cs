@@ -234,6 +234,7 @@
                 // skip items without image
                 if (String.IsNullOrEmpty(tabPage.ImageKey) || _drawerItemRects == null)
                     continue;
+                if (iconsBrushes.ContainsKey(tabPage.ImageKey)) continue;
 
                 // Image Rect
                 Rectangle destRect = new Rectangle(0, 0, _baseTabControl.ImageList.Images[tabPage.ImageKey].Width, _baseTabControl.ImageList.Images[tabPage.ImageKey].Height);
