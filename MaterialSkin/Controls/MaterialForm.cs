@@ -572,6 +572,7 @@ namespace MaterialSkin.Controls
                 H = ClientSize.Height - _statusBarBounds.Height - _actionBarBounds.Height;
                 drawerForm.Size = new Size(DrawerWidth, H);
                 //drawerOverlay.Size = new Size(ClientSize.Width, H);
+                if (!DrawerIsOpen) drawerControl.Hide();
             };
 
             Move += (sender, e) =>
