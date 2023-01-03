@@ -10,17 +10,11 @@
     using System.Drawing.Text;
     using System.Windows.Forms;
 
-    [System.ComponentModel.DesignerCategory("")]
     public class MaterialDrawer : Control, IMaterialControl
     {
         // TODO: Invalidate when changing custom properties
-        private bool _showIconsWhenHidden;
-        #region DPI-Awareness
-        private float dpiMultiplicator;
 
-        private int dpiAdjust(int value) => (int) Math.Round(value * dpiMultiplicator);
-        private float dpiAdjust(float value) => value * dpiMultiplicator;
-        #endregion
+        private bool _showIconsWhenHidden;
 
         [Category("Drawer")]
         public bool ShowIconsWhenHidden
@@ -61,9 +55,6 @@
                     Hide();
             }
         }
-
-        public int DrawerWidth;
-        private int paintWidth;
 
         [Category("Drawer")]
         public bool AutoHide { get; set; }
@@ -243,7 +234,6 @@
                 // skip items without image
                 if (String.IsNullOrEmpty(tabPage.ImageKey) || _drawerItemRects == null)
                     continue;
-                if (iconsBrushes.ContainsKey(tabPage.ImageKey)) continue;
 
                 // Image Rect
                 Rectangle destRect = new Rectangle(0, 0, _baseTabControl.ImageList.Images[tabPage.ImageKey].Width, _baseTabControl.ImageList.Images[tabPage.ImageKey].Height);
@@ -295,9 +285,10 @@
                                                      iconRect.Y + iconRect.Height / 2 - _baseTabControl.ImageList.Images[tabPage.ImageKey].Height / 2);
 
                 // add to dictionary
-                iconsBrushes[tabPage.ImageKey] = textureBrushGray;
-                iconsSelectedBrushes[tabPage.ImageKey] = textureBrushColor;
-                iconsSize[tabPage.ImageKey] = new Rectangle(0, 0, iconRect.Width, iconRect.Height);
+                var ik = string.Concat(tabPage.ImageKey, "_", tabPage.Name);
+                iconsBrushes.Add(ik, textureBrushGray);
+                iconsSelectedBrushes.Add(ik, textureBrushColor);
+                iconsSize.Add(ik, new Rectangle(0, 0, iconRect.Width, iconRect.Height));
             }
         }
 
@@ -323,10 +314,9 @@
 
         public MaterialDrawer()
         {
-            dpiMultiplicator = this.DeviceDpi / 96f;
             SetStyle(ControlStyles.DoubleBuffer | ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
-            Height = dpiAdjust(120);
-            Width = dpiAdjust(250);
+            Height = 120;
+            Width = 250;
             IndicatorWidth = 0;
             _isOpen = false;
             ShowIconsWhenHidden = false;
@@ -403,8 +393,8 @@
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         protected override void InitLayout()
         {
-            drawerItemHeight = dpiAdjust(TAB_HEADER_PADDING * 2 - SkinManager.FORM_PADDING / 2);
-            MinWidth = (int) dpiAdjust(SkinManager.FORM_PADDING * 1.5f) + drawerItemHeight;
+            drawerItemHeight = TAB_HEADER_PADDING * 2 - SkinManager.FORM_PADDING / 2;
+            MinWidth = (int)(SkinManager.FORM_PADDING * 1.5 + drawerItemHeight);
             _showHideAnimManager.SetProgress(_isOpen ? 0 : 1);
             showHideAnimation();
             Invalidate();
@@ -414,36 +404,33 @@
 
         private void showHideAnimation()
         {
-            Form parent = Parent as Form;
-            if (parent == null) return;
-            
             var showHideAnimProgress = _showHideAnimManager.GetProgress();
             if (_showHideAnimManager.IsAnimating())
             {
                 if (ShowIconsWhenHidden)
                 {
-                    parent.Width = DrawerWidth + (int)((-DrawerWidth + MinWidth) * showHideAnimProgress);
+                    Location = new Point((int)((-Width + MinWidth) * showHideAnimProgress), Location.Y);
                 }
                 else
                 {
-                    parent.Width = DrawerWidth + (int)(-DrawerWidth * showHideAnimProgress);
+                    Location = new Point((int)(-Width * showHideAnimProgress), Location.Y);
                 }
             }
             else
             {
                 if (_isOpen)
                 {
-                    parent.Width = DrawerWidth;
+                    Location = new Point(0, Location.Y);
                 }
                 else
                 {
                     if (ShowIconsWhenHidden)
                     {
-                        parent.Width = DrawerWidth + (int)(-DrawerWidth + MinWidth);
+                        Location = new Point((int)(-Width + MinWidth), Location.Y);
                     }
                     else
                     {
-                        parent.Width = 0;
+                        Location = new Point(-Width, Location.Y);
                     }
                 }
             }
@@ -516,11 +503,11 @@
                     (currentTabIndex == _baseTabControl.SelectedIndex ? (_highlightWithAccent ? SkinManager.ColorScheme.AccentColor : SkinManager.ColorScheme.PrimaryColor) : // selected
                     SkinManager.TextHighEmphasisColor));
 
-                IntPtr textFont = SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle2, DeviceDpi);
+                IntPtr textFont = SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle2);
 
                 Rectangle textRect = _drawerItemRects[currentTabIndex];
-                textRect.X += _baseTabControl.ImageList != null ? drawerItemHeight : (int)dpiAdjust(SkinManager.FORM_PADDING * 0.75f);
-                textRect.Width -= dpiAdjust(SkinManager.FORM_PADDING << 2);
+                textRect.X += _baseTabControl.ImageList != null ? drawerItemHeight : (int)(SkinManager.FORM_PADDING * 0.75);
+                textRect.Width -= SkinManager.FORM_PADDING << 2;
 
                 using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
                 {
@@ -530,18 +517,19 @@
                 // Icons
                 if (_baseTabControl.ImageList != null && !String.IsNullOrEmpty(tabPage.ImageKey))
                 {
+                    var ik = string.Concat(tabPage.ImageKey, "_", tabPage.Name);
                     Rectangle iconRect = new Rectangle(
-                        _drawerItemRects[currentTabIndex].X + (drawerItemHeight >> 1) - (iconsSize[tabPage.ImageKey].Width >> 1),
-                        _drawerItemRects[currentTabIndex].Y + (drawerItemHeight >> 1) - (iconsSize[tabPage.ImageKey].Height >> 1),
-                        iconsSize[tabPage.ImageKey].Width, iconsSize[tabPage.ImageKey].Height);
-
+                        _drawerItemRects[currentTabIndex].X + (drawerItemHeight >> 1) - (iconsSize[ik].Width >> 1),
+                        _drawerItemRects[currentTabIndex].Y + (drawerItemHeight >> 1) - (iconsSize[ik].Height >> 1),
+                        iconsSize[ik].Width, iconsSize[ik].Height);
+                    
                     if (ShowIconsWhenHidden)
                     {
-                        iconsBrushes[tabPage.ImageKey].TranslateTransform(dx, 0);
-                        iconsSelectedBrushes[tabPage.ImageKey].TranslateTransform(dx, 0);
+                        iconsBrushes[ik].TranslateTransform(dx, 0);
+                        iconsSelectedBrushes[ik].TranslateTransform(dx, 0);
                     }
 
-                    g.FillRectangle(currentTabIndex == _baseTabControl.SelectedIndex ? iconsSelectedBrushes[tabPage.ImageKey] : iconsBrushes[tabPage.ImageKey], iconRect);
+                    g.FillRectangle(currentTabIndex == _baseTabControl.SelectedIndex ? iconsSelectedBrushes[ik] : iconsBrushes[ik], iconRect);
                 }
             }
 
@@ -550,7 +538,7 @@
             {
                 using (Pen dividerPen = new Pen(SkinManager.DividersColor, 1))
                 {
-                    g.DrawLine(dividerPen, paintWidth - 1, 0, paintWidth - 1, Height);
+                    g.DrawLine(dividerPen, Width - 1, 0, Width - 1, Height);
                 }
             }
 
@@ -776,20 +764,15 @@
             }
 
             //Calculate the bounds of each tab header specified in the base tab control
-            Form parent = Parent as Form;
-            if (parent == null) return;
-            paintWidth = parent.Width;
-            int x = (int)dpiAdjust(SkinManager.FORM_PADDING * 0.75f);
-            int w = paintWidth - dpiAdjust((int)(SkinManager.FORM_PADDING * 1.5f) - 1);
             for (int i = 0; i < _baseTabControl.TabPages.Count; i++)
             {
                 _drawerItemRects[i] = (new Rectangle(
-                    x, dpiAdjust((TAB_HEADER_PADDING * 2) * i + (int)(SkinManager.FORM_PADDING >> 1)),
-                    w, drawerItemHeight));
+                    (int)(SkinManager.FORM_PADDING * 0.75) - (ShowIconsWhenHidden ? Location.X : 0),
+                    (TAB_HEADER_PADDING * 2) * i + (int)(SkinManager.FORM_PADDING >> 1),
+                    (Width + (ShowIconsWhenHidden ? Location.X : 0)) - (int)(SkinManager.FORM_PADDING * 1.5) - 1,
+                    drawerItemHeight));
 
-                _drawerItemPaths[i] = DrawHelper.CreateRoundRect(new RectangleF(
-                    x-0.5f, _drawerItemRects[i].Y-0.5f, w, drawerItemHeight
-                    ), dpiAdjust(4));
+                _drawerItemPaths[i] = DrawHelper.CreateRoundRect(new RectangleF(_drawerItemRects[i].X - 0.5f, _drawerItemRects[i].Y - 0.5f, _drawerItemRects[i].Width, _drawerItemRects[i].Height), 4);
             }
         }
     }
