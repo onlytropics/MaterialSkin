@@ -536,11 +536,10 @@ namespace MaterialSkin.Controls
             drawerForm.Controls.Add(drawerControl);
             drawerControl.Location = new Point(0, 0);
             drawerControl.Size = new Size(DrawerWidth, H);
-            drawerControl.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom);
+            drawerControl.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right | AnchorStyles.Left;
             drawerControl.BaseTabControl = DrawerTabControl;
             drawerControl.ShowIconsWhenHidden = true;
             drawerControl.DrawerWidth = DrawerWidth;
-            drawerControl.Anchor = AnchorStyles.Right | AnchorStyles.Left;
 
             // Init Options
             drawerControl.IsOpen = DrawerIsOpen;
