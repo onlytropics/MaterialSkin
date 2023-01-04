@@ -149,6 +149,7 @@
             ForeColor = SkinManager.TextHighEmphasisColor;
             DrawMode = DrawMode.OwnerDrawVariable;
             DropDownWidth = Width;
+            DropDownStyle = ComboBoxStyle.DropDownList;
 
             // Animations
             _animationManager = new AnimationManager(true)
