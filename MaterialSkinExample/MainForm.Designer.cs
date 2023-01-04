@@ -133,6 +133,7 @@ namespace MaterialSkinExample
             this.materialSwitch16 = new MaterialSkin.Controls.MaterialSwitch();
             this.materialSwitch13 = new MaterialSkin.Controls.MaterialSwitch();
             this.materialComboBox7 = new MaterialSkin.Controls.MaterialComboBox();
+            this.materialComboBox8 = new MaterialSkin.Controls.MaterialComboBox();
             this.materialSwitch12 = new MaterialSkin.Controls.MaterialSwitch();
             this.materialSwitch11 = new MaterialSkin.Controls.MaterialSwitch();
             this.materialSwitch10 = new MaterialSkin.Controls.MaterialSwitch();
@@ -1119,6 +1120,7 @@ namespace MaterialSkinExample
             this.tabPage2.Controls.Add(this.materialComboBox5);
             this.tabPage2.Controls.Add(this.materialComboBox4);
             this.tabPage2.Controls.Add(this.materialComboBox3);
+            this.tabPage2.Controls.Add(this.materialComboBox8);
             this.tabPage2.Controls.Add(this.materialLabel5);
             this.tabPage2.Controls.Add(this.materialCheckedListBox1);
             this.tabPage2.Controls.Add(this.materialComboBox1);
@@ -1310,6 +1312,31 @@ namespace MaterialSkinExample
             this.materialComboBox5.Size = new System.Drawing.Size(190, 49);
             this.materialComboBox5.StartIndex = 0;
             this.materialComboBox5.TabIndex = 72;
+            // 
+            // materialComboBox8
+            // 
+            this.materialComboBox8.AutoResize = false;
+            this.materialComboBox8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.materialComboBox8.Depth = 0;
+            this.materialComboBox8.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.materialComboBox8.DropDownHeight = 174;
+            this.materialComboBox8.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
+            this.materialComboBox8.DropDownWidth = 121;
+            this.materialComboBox8.Enabled = true;
+            this.materialComboBox8.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.materialComboBox8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.materialComboBox8.FormattingEnabled = true;
+            this.materialComboBox8.Hint = "Editable";
+            this.materialComboBox8.IntegralHeight = false;
+            this.materialComboBox8.ItemHeight = 43;
+            this.materialComboBox8.Items.AddRange(new object[] {"When","life","gives","you","lemons"});
+            this.materialComboBox8.Location = new System.Drawing.Point(463+200, 352);
+            this.materialComboBox8.MaxDropDownItems = 4;
+            this.materialComboBox8.MouseState = MaterialSkin.MouseState.OUT;
+            this.materialComboBox8.Name = "materialComboBox8";
+            this.materialComboBox8.Size = new System.Drawing.Size(190, 49);
+            this.materialComboBox8.StartIndex = 0;
+            this.materialComboBox8.TabIndex = 72;
             // 
             // materialComboBox4
             // 
@@ -3458,6 +3485,7 @@ namespace MaterialSkinExample
         private MaterialComboBox materialComboBox3;
         private MaterialComboBox materialComboBox2;
         private MaterialComboBox materialComboBox6;
+        private MaterialComboBox materialComboBox8;
         private MaterialTextBox2 materialTextBox5;
         private MaterialTextBox2 materialTextBox4;
         private MaterialSwitch materialSwitch8;

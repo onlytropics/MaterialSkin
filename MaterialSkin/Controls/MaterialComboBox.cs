@@ -52,6 +52,7 @@
                 _UseTallSize = value;
                 setHeightVars();
                 Invalidate();
+                if (editBox != null) editBox.UseTallSize = value;
             }
         }
 
@@ -69,6 +70,7 @@
                 _hint = value;
                 hasHint = !String.IsNullOrEmpty(Hint);
                 Invalidate();
+                if (editBox != null) editBox.Hint = value;
             }
         }
 
@@ -110,6 +112,22 @@
 
         private readonly AnimationManager _animationManager;
 
+        #region Editable DropDown
+        private MaterialTextBox2 editBox;
+
+        public override string Text { 
+            get
+            {
+                return base.Text; 
+            }
+            set
+            {
+                if (editBox != null) editBox.Text = value;
+                base.Text = value;
+            }
+        }
+        #endregion
+
         public MaterialComboBox()
         {
             dpiMultiplicator = DeviceDpi/96f;
@@ -130,8 +148,8 @@
             BackColor = SkinManager.BackgroundColor;
             ForeColor = SkinManager.TextHighEmphasisColor;
             DrawMode = DrawMode.OwnerDrawVariable;
-            DropDownStyle = ComboBoxStyle.DropDownList;
             DropDownWidth = Width;
+            DropDownStyle = ComboBoxStyle.DropDownList;
 
             // Animations
             _animationManager = new AnimationManager(true)
@@ -317,7 +335,7 @@
 
         private void CustomDrawItem(object sender, System.Windows.Forms.DrawItemEventArgs e)
         {
-            if (e.Index < 0 || e.Index > Items.Count || !Focused) return;
+            //if (e.Index < 0 || e.Index > Items.Count || !Focused) return;
 
             Graphics g = e.Graphics;
 
@@ -368,10 +386,35 @@
             MouseState = MouseState.OUT;
             MeasureItem += CustomMeasureItem;
             DrawItem += CustomDrawItem;
-            DropDownStyle = ComboBoxStyle.DropDownList;
             DrawMode = DrawMode.OwnerDrawVariable;
             recalculateAutoSize();
             setHeightVars();
+
+            if (DropDownStyle == ComboBoxStyle.DropDown)
+            {
+                editBox = new MaterialTextBox2();
+                editBox.Visible = true;
+                editBox.Location = new Point(0, 0);
+                float FormPadding = dpiAdjust((float)SkinManager.FORM_PADDING);
+                editBox.Size = new Size((int)(Width - dpiAdjust(8.5f) - 2*FormPadding), Height);
+                editBox.Hint = Hint;
+                this.Controls.Add(editBox);
+
+                this.SelectedValueChanged += (sender, args) => {
+                    editBox.Text = base.Text;
+                };
+
+                editBox.TextChanged += (sender, args) => {
+                    base.Text = editBox.Text;
+                };
+
+                SizeChanged += (sender, args) => {
+                    float locFormPadding = dpiAdjust((float)SkinManager.FORM_PADDING);
+                    editBox.Size = new Size((int)(Width - dpiAdjust(8.5f) - 2 * locFormPadding), Height);
+                };
+            }
+
+            DropDownStyle = ComboBoxStyle.DropDownList;
         }
 
         protected override void OnResize(EventArgs e)
@@ -379,6 +422,10 @@
             base.OnResize(e);
             recalculateAutoSize();
             setHeightVars();
+            if (editBox != null)
+            {
+                editBox.Size = new Size(Size.Width - 30, Size.Height);
+            }
         }
 
         private void setHeightVars()
