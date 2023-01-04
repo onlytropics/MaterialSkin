@@ -97,7 +97,7 @@
 
         private const int TEXT_SMALL_SIZE = 18;
         private const int TEXT_SMALL_Y = 4;
-        private const int BOTTOM_PADDING = 3;
+        private const int BOTTOM_PADDING = 4;
 
         #region constants adjusted for dpi
         private int TextSmallSize;
