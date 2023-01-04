@@ -398,6 +398,7 @@
                 float FormPadding = dpiAdjust((float)SkinManager.FORM_PADDING);
                 editBox.Size = new Size((int)(Width - dpiAdjust(8.5f) - 2*FormPadding), Height);
                 editBox.Hint = Hint;
+                editBox.BackColor = BackColor;
                 this.Controls.Add(editBox);
 
                 this.SelectedValueChanged += (sender, args) => {
@@ -413,8 +414,8 @@
                     editBox.Size = new Size((int)(Width - dpiAdjust(8.5f) - 2 * locFormPadding), Height);
                 };
             }
-
-            DropDownStyle = ComboBoxStyle.DropDownList;
+            if (!DesignMode)
+                DropDownStyle = ComboBoxStyle.DropDownList;
         }
 
         protected override void OnResize(EventArgs e)
