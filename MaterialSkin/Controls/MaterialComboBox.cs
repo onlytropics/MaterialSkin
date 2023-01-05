@@ -364,7 +364,8 @@
             }
             else
             {
-                Text = Items[e.Index].ToString();
+                if (e.Index >= 0 && e.Index < Items.Count)
+                    Text = Items[e.Index].ToString();
             }
 
             float FormPadding = dpiAdjust((float)SkinManager.FORM_PADDING);
