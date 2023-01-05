@@ -297,6 +297,7 @@
 
             g.Clip = new Region(textRect);
 
+            if (_text != null)
             using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
             {
                 // Draw user text
