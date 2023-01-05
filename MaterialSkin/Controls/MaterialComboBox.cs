@@ -7,6 +7,7 @@
     using System.Linq;
     using System.Data;
     using System.Windows.Forms;
+    using System.Diagnostics;
 
     [System.ComponentModel.DesignerCategory("")]
     public class MaterialComboBox : ComboBox, IMaterialControl
@@ -115,15 +116,16 @@
         #region Editable DropDown
         private MaterialTextBox2 editBox;
 
+        private string _text;
         public override string Text { 
             get
             {
-                return base.Text; 
+                return _text;
             }
             set
             {
                 if (editBox != null) editBox.Text = value;
-                base.Text = value;
+                _text = value;
             }
         }
         #endregion
@@ -299,7 +301,7 @@
             {
                 // Draw user text
                 NativeText.DrawTransparentText(
-                    Text,
+                    _text,
                     SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle1, DeviceDpi),
                     Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
                     textRect.Location,
@@ -400,14 +402,15 @@
                 editBox.Size = new Size((int)(Width - dpiAdjust(8.5f) - 2*FormPadding), Height);
                 editBox.Hint = Hint;
                 editBox.BackColor = BackColor;
+                editBox.Text = _text;
                 this.Controls.Add(editBox);
 
                 this.SelectedValueChanged += (sender, args) => {
-                    editBox.Text = base.Text;
+                    _text = editBox.Text = base.SelectedItem.ToString();
                 };
 
                 editBox.TextChanged += (sender, args) => {
-                    base.Text = editBox.Text;
+                    _text = editBox.Text;
                 };
 
                 SizeChanged += (sender, args) => {
