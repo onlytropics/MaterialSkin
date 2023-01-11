@@ -103,6 +103,8 @@ public sealed class NativeTextRenderer : IDisposable
 
     private void DrawTransparentText(IntPtr fontHandle, string str, Color color, Point point, Size size, TextAlignFlags flags, bool multilineSupport)
     {
+        if (String.IsNullOrEmpty(str)) return;
+
         // Create a memory DC so we can work off-screen
         IntPtr memoryHdc = CreateCompatibleDC(_hdc);
         SetBkMode(memoryHdc, 1);

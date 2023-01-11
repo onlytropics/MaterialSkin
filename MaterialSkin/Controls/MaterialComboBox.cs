@@ -356,8 +356,8 @@
             {
                 if (!Items[e.Index].GetType().Equals(typeof(DataRowView)))
                 {
-                    var item = Items[e.Index].GetType().GetProperty(DisplayMember).GetValue(Items[e.Index]);
-                    Text = item.ToString();
+                    var item = Items[e.Index].GetType().GetProperty(DisplayMember)?.GetValue(Items[e.Index]);
+                    Text = item?.ToString();
                 }
                 else
                 {
