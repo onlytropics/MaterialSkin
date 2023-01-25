@@ -853,6 +853,11 @@ namespace MaterialSkin.Controls
                 m.Result = new IntPtr(-1);
                 return;
             }
+            else if (m.Msg == /* WM_ERASEBKGND */ 0x0014)
+            {
+                m.Result = new IntPtr(1);
+                return;
+            }
 
             base.WndProc(ref m);
             if (DesignMode || IsDisposed)
@@ -1050,6 +1055,11 @@ namespace MaterialSkin.Controls
                 controls.RemoveAt(0);
             }
             ResumeLayout();
+        }
+
+        protected override void OnPaintBackground(PaintEventArgs pevent)
+        {
+            //base.OnPaintBackground(pevent);
         }
 
         protected override void OnPaint(PaintEventArgs e)
