@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-		<TargetFrameworks>net5.0-windows;net48;net472</TargetFrameworks>
-		<RuntimeIdentifier>win</RuntimeIdentifier>
+		<TargetFrameworks>net6.0-windows;net48;net472</TargetFrameworks>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
       <OutputType>Library</OutputType>
       <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<UseWindowsForms>true</UseWindowsForms>
