@@ -116,6 +116,8 @@
         #region Editable DropDown
         private MaterialTextBox2 editBox;
 
+        public new event EventHandler TextChanged;
+
         private string _text;
         public override string Text { 
             get
@@ -126,6 +128,7 @@
             {
                 if (editBox != null) editBox.Text = value;
                 _text = value;
+                TextChanged?.Invoke(this, EventArgs.Empty);
             }
         }
         #endregion
@@ -412,6 +415,7 @@
 
                 editBox.TextChanged += (sender, args) => {
                     _text = editBox.Text;
+                    TextChanged?.Invoke(this, EventArgs.Empty);
                 };
 
                 SizeChanged += (sender, args) => {
