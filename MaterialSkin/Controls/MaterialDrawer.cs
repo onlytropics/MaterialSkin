@@ -166,12 +166,15 @@
             get { return _baseTabControl; }
             set
             {
+                if (_baseTabControl != null)
+                    _baseTabControl.ControlRemoved -= TabRemoved;
                 _baseTabControl = value;
                 if (_baseTabControl == null)
                     return;
 
                 UpdateTabRects();
                 preProcessIcons();
+                _baseTabControl.ControlRemoved += TabRemoved;
 
                 // Other helpers
 
@@ -792,6 +795,15 @@
                 _drawerItemPaths[i] = DrawHelper.CreateRoundRect(new RectangleF(
                     x-0.5f, _drawerItemRects[i].Y-0.5f, w, drawerItemHeight
                     ), dpiAdjust(4));
+            }
+        }
+
+        private void TabRemoved(object sender, ControlEventArgs e)
+        {
+            TabPage p = e.Control as TabPage;
+            if (p != null)
+            {
+                _previousSelectedTabIndex = -1;
             }
         }
     }
