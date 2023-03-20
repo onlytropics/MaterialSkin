@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines the AnimationDirection
     /// </summary>
-    internal enum AnimationDirection
+    public enum AnimationDirection
     {
         /// <summary>
         /// Defines the In

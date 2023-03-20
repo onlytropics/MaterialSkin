@@ -8,7 +8,7 @@
     /// <summary>
     /// Defines the <see cref="AnimationManager" />
     /// </summary>
-    internal class AnimationManager
+    public class AnimationManager
     {
         /// <summary>
         /// Gets or sets a value indicating whether InterruptAnimation

@@ -67,12 +67,15 @@
     <Compile Include="ColorScheme.cs" />
     <Compile Include="Controls\BaseTextBox.cs" />
     <Compile Include="Controls\FlexibleMaterialDialog.cs" />
+    <Compile Include="Controls\MaterialDialog.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Controls\MaterialListBox.cs" />
+    <Compile Include="Controls\MaterialPasswordDialog.cs" />
     <Compile Include="Controls\MaterialProgressSnackBar.cs" />
     <Compile Include="Controls\MaterialScrollBar.cs" />
     <Compile Include="Controls\MaterialExpansionPanel.cs" />
     <Compile Include="Controls\MaterialSlider.cs" />
-    <Compile Include="Controls\MaterialDialog.cs" />
     <Compile Include="Controls\MaterialSnackBar.cs" />
     <Compile Include="Controls\MaterialMaskedTextBox.cs" />
     <Compile Include="Controls\MaterialSwitch.cs" />

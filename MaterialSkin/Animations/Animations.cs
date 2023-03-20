@@ -5,7 +5,7 @@
     /// <summary>
     /// Defines the AnimationType
     /// </summary>
-    internal enum AnimationType
+    public enum AnimationType
     {
         /// <summary>
         /// Defines the Linear
@@ -31,7 +31,7 @@
     /// <summary>
     /// Defines the <see cref="AnimationLinear" />
     /// </summary>
-    internal static class AnimationLinear
+    public static class AnimationLinear
     {
         /// <summary>
         /// The CalculateProgress
@@ -47,7 +47,7 @@
     /// <summary>
     /// Defines the <see cref="AnimationEaseInOut" />
     /// </summary>
-    internal static class AnimationEaseInOut
+    public static class AnimationEaseInOut
     {
         /// <summary>
         /// Defines the PI

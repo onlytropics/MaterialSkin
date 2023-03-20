@@ -59,6 +59,7 @@ namespace MaterialSkinExample
             this.materialTabControl1 = new MaterialSkin.Controls.MaterialTabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.materialButton25 = new MaterialSkin.Controls.MaterialButton();
+            this.materialButton26 = new MaterialSkin.Controls.MaterialButton();
             this.materialButton6 = new MaterialSkin.Controls.MaterialButton();
             this.materialLabel57 = new MaterialSkin.Controls.MaterialLabel();
             this.materialLabel53 = new MaterialSkin.Controls.MaterialLabel();
@@ -310,6 +311,7 @@ namespace MaterialSkinExample
             // 
             this.tabPage1.BackColor = System.Drawing.Color.White;
             this.tabPage1.Controls.Add(this.materialButton25);
+            this.tabPage1.Controls.Add(this.materialButton26);
             this.tabPage1.Controls.Add(this.materialButton6);
             this.tabPage1.Controls.Add(this.materialLabel57);
             this.tabPage1.Controls.Add(this.materialLabel53);
@@ -352,6 +354,26 @@ namespace MaterialSkinExample
             this.materialButton25.UseAccentColor = false;
             this.materialButton25.UseVisualStyleBackColor = true;
             this.materialButton25.Click += new System.EventHandler(this.materialButton25_Click);
+            // 
+            // materialButton26
+            // 
+            this.materialButton26.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.materialButton26.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            this.materialButton26.Depth = 0;
+            this.materialButton26.HighEmphasis = true;
+            this.materialButton26.Icon = null;
+            this.materialButton26.Location = new System.Drawing.Point(450, 509);
+            this.materialButton26.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.materialButton26.MouseState = MaterialSkin.MouseState.HOVER;
+            this.materialButton26.Name = "materialButton25";
+            this.materialButton26.NoAccentTextColor = System.Drawing.Color.Empty;
+            this.materialButton26.Size = new System.Drawing.Size(118, 36);
+            this.materialButton26.TabIndex = 41;
+            this.materialButton26.Text = "Show Password Dialog";
+            this.materialButton26.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            this.materialButton26.UseAccentColor = false;
+            this.materialButton26.UseVisualStyleBackColor = true;
+            this.materialButton26.Click += new System.EventHandler(this.materialButton26_Click);
             // 
             // materialButton6
             // 
@@ -3552,6 +3574,7 @@ namespace MaterialSkinExample
         private MaterialSwitch msReadOnly;
         private MaterialMaskedTextBox materialMaskedTextBox1;
         private MaterialButton materialButton25;
+        private MaterialButton materialButton26;
         private MaterialLabel materialLabel57;
         private MaterialSwitch materialSwitch16;
         private MaterialLabel materialLabel58;

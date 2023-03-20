@@ -12,19 +12,19 @@
     {
 
         private const int LEFT_RIGHT_PADDING = 24;
-        private const int BUTTON_PADDING = 8;
+        private const int BUTTON_PADDING = 8; 
         private const int BUTTON_HEIGHT = 36;
         private const int TEXT_TOP_PADDING = 17;
         private const int TEXT_BOTTOM_PADDING = 28;
         private int _header_Height = 40;
 
-        private MaterialButton _validationButton = new MaterialButton();
-        private MaterialButton _cancelButton = new MaterialButton();
-        private AnimationManager _AnimationManager;
-        private bool CloseAnimation = false;
-        private Form _formOverlay;
-        private String _text;
-        private String _title;
+        protected MaterialButton _validationButton = new MaterialButton();
+        protected MaterialButton _cancelButton = new MaterialButton();
+        protected AnimationManager _AnimationManager;
+        protected bool CloseAnimation = false;
+        protected Form _formOverlay;
+        protected String _text; 
+        protected String _title;
 
         /// <summary>
         /// The Collection for the Buttons
@@ -121,7 +121,10 @@
                 RectWidth,
                 RectHeight + 9);
 
-            Height = _header_Height + TEXT_TOP_PADDING + textRect.Height + TEXT_BOTTOM_PADDING + 52; //560;
+            int rectDlgHeight =
+            AddDialogControls(new Point(LEFT_RIGHT_PADDING, _header_Height + TEXT_TOP_PADDING + textRect.Height + TEXT_TOP_PADDING), Width - 2 * LEFT_RIGHT_PADDING);
+
+            Height = _header_Height + TEXT_TOP_PADDING + textRect.Height + TEXT_TOP_PADDING + rectDlgHeight + TEXT_BOTTOM_PADDING + 52; 
             Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 6, 6));
 
             int _buttonWidth = ((TextRenderer.MeasureText(ValidationButtonText, SkinManager.getFontByType(MaterialSkinManager.fontType.Button))).Width + 32);
@@ -173,6 +176,18 @@
         {
         }
 
+        /// <summary>
+        /// In a derived class, overwrite this method to add controls to the dialog. 
+        /// Place them starting at the given Location, using the width maxWidth.
+        /// Return the used height and the MaterialDialog class will adjust the window height accordingly.
+        /// </summary>
+        /// <param name="Location">Point in Client Coordinates where to start adding Controls</param>
+        /// <param name="maxWidth">Maximum Width you can use</param>
+        /// <returns>The height of the added Controls</returns>
+        protected virtual int AddDialogControls(Point Location, int maxWidth)
+        {
+            return 0;
+        }
 
         /// <summary>
         /// Sets up the Starting Location and starts the Animation

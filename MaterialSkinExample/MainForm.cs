@@ -298,7 +298,17 @@ namespace MaterialSkinExample
             SnackBarMessage.Show(this);
 
         }
-        
+
+        private void materialButton26_Click(object sender, EventArgs e)
+        {
+            MaterialPasswordDialog materialDialog = new MaterialPasswordDialog(this, "Dialog Title", "Password required to continue", "OK", true, "Cancel", false);
+            DialogResult result = materialDialog.ShowDialog(this);
+
+            MaterialSnackBar SnackBarMessage = new MaterialSnackBar(result.ToString(), 750);
+            SnackBarMessage.Show(this);
+
+        }
+
         private void materialSwitch16_CheckedChanged(object sender, EventArgs e)
         {
             materialTextBox21.ShowAssistiveText = materialSwitch16.Checked;
