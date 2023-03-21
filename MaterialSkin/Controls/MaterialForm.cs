@@ -151,6 +151,8 @@ namespace MaterialSkin.Controls
         [Category("Drawer")]
         public MaterialTabControl DrawerTabControl { get; set; }
 
+        public MaterialDrawer Drawer => drawerControl;
+
         public override string Text
         {
             get { return base.Text; }

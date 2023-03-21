@@ -199,7 +199,21 @@
             }
         }
 
-        private void preProcessIcons()
+        public void ModifyTabIcon(TabPage tabPage, string ImageKey)
+        {
+            tabPage.ImageKey = ImageKey;
+            preProcessIcons(tabPage);
+
+            var currentTabIndex = _baseTabControl.TabPages.IndexOf(tabPage);
+
+            Rectangle iconRect = new Rectangle(
+               _drawerItemRects[currentTabIndex].X + (drawerItemHeight / 2) - (_baseTabControl.ImageList.Images[tabPage.ImageKey].Width / 2),
+               _drawerItemRects[currentTabIndex].Y + (drawerItemHeight / 2) - (_baseTabControl.ImageList.Images[tabPage.ImageKey].Height / 2),
+               _baseTabControl.ImageList.Images[tabPage.ImageKey].Width, _baseTabControl.ImageList.Images[tabPage.ImageKey].Height);
+            Invalidate(iconRect, false);
+        }
+
+        private void preProcessIcons(TabPage page = null)
         {
             // pre-process and pre-allocate texture brushes (icons)
             if (_baseTabControl == null || _baseTabControl.TabCount == 0 || _baseTabControl.ImageList == null || _drawerItemRects == null || _drawerItemRects.Count == 0)
@@ -237,12 +251,14 @@
             colorImageAttributes.SetColorMatrix(colorMatrixColor, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 
             // Create brushes
-            iconsBrushes = new Dictionary<string, TextureBrush>(_baseTabControl.TabPages.Count);
-            iconsSelectedBrushes = new Dictionary<string, TextureBrush>(_baseTabControl.TabPages.Count);
-            iconsSize = new Dictionary<string, Rectangle>(_baseTabControl.TabPages.Count);
+            //iconsBrushes = new Dictionary<string, TextureBrush>(_baseTabControl.TabPages.Count);
+            //iconsSelectedBrushes = new Dictionary<string, TextureBrush>(_baseTabControl.TabPages.Count);
+            //iconsSize = new Dictionary<string, Rectangle>(_baseTabControl.TabPages.Count);
 
-            foreach (TabPage tabPage in _baseTabControl.TabPages)
+            foreach (TabPage _tabPage in _baseTabControl.TabPages)
             {
+                TabPage tabPage = (page != null) ? page : _tabPage;
+
                 // skip items without image
                 if (String.IsNullOrEmpty(tabPage.ImageKey) || _drawerItemRects == null)
                     continue;
@@ -299,9 +315,11 @@
 
                 // add to dictionary
                 var ik = string.Concat(tabPage.ImageKey, "_", tabPage.Name);
-                iconsBrushes.Add(ik, textureBrushGray);
-                iconsSelectedBrushes.Add(ik, textureBrushColor);
-                iconsSize.Add(ik, new Rectangle(0, 0, iconRect.Width, iconRect.Height));
+                iconsBrushes[ik] = textureBrushGray;
+                iconsSelectedBrushes[ik] = textureBrushColor;
+                iconsSize[ik] = new Rectangle(0, 0, iconRect.Width, iconRect.Height);
+
+                if (page != null) break;
             }
         }
 
@@ -338,6 +356,10 @@
             AutoShow = false;
             HighlightWithAccent = true;
             BackgroundWithAccent = false;
+
+            iconsBrushes = new Dictionary<string, TextureBrush>();
+            iconsSelectedBrushes = new Dictionary<string, TextureBrush>();
+            iconsSize = new Dictionary<string, Rectangle>();
 
             _showHideAnimManager = new AnimationManager
             {
