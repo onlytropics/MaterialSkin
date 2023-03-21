@@ -124,7 +124,6 @@
         public MaterialSnackBar(string Text, int Duration, bool ShowActionButton, string ActionButtonText, bool UseAccentColor)
         {
             this.Text = Text;
-            this.Duration = Duration;
             TopMost = true;
             ShowInTaskbar = false;
             Sizable = false;
@@ -147,7 +146,11 @@
             _AnimationManager.Increment = 0.03;
             _AnimationManager.OnAnimationProgress += _AnimationManager_OnAnimationProgress;
 
-            _duration.Tick += new EventHandler(duration_Tick);
+            if (Duration > 0)
+            {
+                _duration.Tick += new EventHandler(duration_Tick);
+                _duration.Interval = Duration;
+            }
 
             _actionButton = new MaterialButton
             {
