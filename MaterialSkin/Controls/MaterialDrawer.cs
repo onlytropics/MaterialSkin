@@ -11,7 +11,7 @@
     using System.Windows.Forms;
 
     [System.ComponentModel.DesignerCategory("")]
-    public class MaterialDrawer : Control, IMaterialControl
+    public class MaterialDrawer : Control, IMaterialControl, IDisposable
     {
         // TODO: Invalidate when changing custom properties
         private bool _showIconsWhenHidden;
@@ -121,6 +121,9 @@
             }
         }
 
+        [Browsable(false)]
+        public Pen HighlightPen;
+
         [Category("Drawer")]
         public int IndicatorWidth { get; set; }
 
@@ -197,6 +200,18 @@
                     Invalidate();
                 };
             }
+        }
+
+        public void SetHighlight(int tabIndex)
+        {
+            _highlightTabIndex = tabIndex;
+            Invalidate(false);
+        }
+
+        public void ClearHighlight()
+        {
+            _highlightTabIndex = -1;
+            Invalidate(false);
         }
 
         public void ModifyTabIcon(TabPage tabPage, string ImageKey)
@@ -324,6 +339,7 @@
         }
 
         private int _previousSelectedTabIndex;
+        private int _highlightTabIndex = -1;
 
         private Point _animationSource;
 
@@ -405,6 +421,11 @@
             MouseWheel += MaterialDrawer_MouseWheel;
         }
 
+        public new void Dispose()
+        {
+            if (HighlightPen != null) HighlightPen.Dispose();
+        }
+
         private void MaterialDrawer_MouseWheel(object sender, MouseEventArgs e)
         {
             int step = 20;
@@ -434,6 +455,7 @@
             _showHideAnimManager.SetProgress(_isOpen ? 0 : 1);
             showHideAnimation();
             Invalidate();
+            HighlightPen = new Pen(SkinManager.ColorScheme.AccentColor, 2f);
 
             base.InitLayout();
         }
@@ -534,6 +556,11 @@
                     SkinManager.ColorScheme.LightPrimaryColor)); // default dark
                 g.FillPath(bgBrush, _drawerItemPaths[currentTabIndex]);
                 bgBrush.Dispose();
+
+                if (_highlightTabIndex == currentTabIndex && HighlightPen != null)
+                {
+                    g.DrawPath(HighlightPen, _drawerItemPaths[currentTabIndex]);
+                }
 
                 // Text
                 Color textColor = Color.FromArgb(CalculateAlphaZeroWhenClosed(SkinManager.TextHighEmphasisColor.A, UseColors ? SkinManager.TextMediumEmphasisColor.A : 255, currentTabIndex, clickAnimProgress, 1 - showHideAnimProgress), // alpha
