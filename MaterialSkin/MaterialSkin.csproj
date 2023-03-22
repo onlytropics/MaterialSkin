@@ -70,6 +70,10 @@
     <Compile Include="Controls\MaterialDialog.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controls\MaterialLabel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controls\MaterialLabelF.cs" />
     <Compile Include="Controls\MaterialListBox.cs" />
     <Compile Include="Controls\MaterialPasswordDialog.cs" />
     <Compile Include="Controls\MaterialProgressSnackBar.cs" />
@@ -87,7 +91,6 @@
     <Compile Include="Controls\MaterialButton.cs" />
     <Compile Include="Controls\MaterialFloatingActionButton.cs" />
     <Compile Include="Controls\MaterialForm.cs" />
-    <Compile Include="Controls\MaterialLabel.cs" />
     <Compile Include="Controls\MaterialListView.cs" />
     <Compile Include="Controls\MaterialMessageBox.cs" />
     <Compile Include="Controls\MaterialRadioButton.cs" />
