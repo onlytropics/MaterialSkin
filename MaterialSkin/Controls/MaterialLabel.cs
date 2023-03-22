@@ -41,6 +41,10 @@
         DefaultValue(false)]
         public bool UseAccent { get; set; }
 
+        public bool Multiline = true;
+
+        public bool UseCustomColor = false;
+
         private MaterialSkinManager.fontType _fontType = MaterialSkinManager.fontType.Body1;
 
         [Category("Material Skin"),
@@ -139,9 +143,26 @@
             // Draw Text
             using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
             {
+                if (Multiline)
                 NativeText.DrawMultilineTransparentText(
                     Text,
                     SkinManager.getLogFontByType(_fontType, DeviceDpi),
+                    UseCustomColor ? ForeColor :
+                    Enabled ? HighEmphasis ? UseAccent ?
+                    SkinManager.ColorScheme.AccentColor : // High emphasis, accent
+                    (SkinManager.Theme == MaterialSkin.MaterialSkinManager.Themes.LIGHT) ?
+                    SkinManager.ColorScheme.PrimaryColor : // High emphasis, primary Light theme
+                    SkinManager.ColorScheme.PrimaryColor.Lighten(0.25f) : // High emphasis, primary Dark theme
+                    SkinManager.TextHighEmphasisColor : // Normal
+                    SkinManager.TextDisabledOrHintColor, // Disabled
+                    ClientRectangle.Location,
+                    ClientRectangle.Size,
+                    Alignment);
+                else
+                NativeText.DrawTransparentText(
+                    Text,
+                    SkinManager.getLogFontByType(_fontType, DeviceDpi),
+                    UseCustomColor ? ForeColor :
                     Enabled ? HighEmphasis ? UseAccent ?
                     SkinManager.ColorScheme.AccentColor : // High emphasis, accent
                     (SkinManager.Theme == MaterialSkin.MaterialSkinManager.Themes.LIGHT) ?
