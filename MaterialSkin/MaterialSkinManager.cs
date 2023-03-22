@@ -305,10 +305,10 @@
                     return new Font(RobotoFontFamilies["Roboto"], f*12f, FontStyle.Italic, GraphicsUnit.Pixel);
 
                 case fontType.Body1:
-                    return new Font(RobotoFontFamilies["Roboto"], f*14f, FontStyle.Regular, GraphicsUnit.Pixel);
+                    return new Font(RobotoFontFamilies["Roboto"], f*16f, FontStyle.Regular, GraphicsUnit.Pixel);
 
                 case fontType.Body2:
-                    return new Font(RobotoFontFamilies["Roboto"], f*12f, FontStyle.Regular, GraphicsUnit.Pixel);
+                    return new Font(RobotoFontFamilies["Roboto"], f*14f, FontStyle.Regular, GraphicsUnit.Pixel);
 
                 case fontType.Button:
                     return new Font(RobotoFontFamilies["Roboto"], f*14f, FontStyle.Bold, GraphicsUnit.Pixel);
