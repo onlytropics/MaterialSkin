@@ -39,7 +39,10 @@
         public MaterialPasswordDialog(Form ParentForm, string Title, string Text, string ValidationButtonText, bool ShowCancelButton, string CancelButtonText, bool UseAccentColor)
             :base(ParentForm,Title,Text,ValidationButtonText,ShowCancelButton,CancelButtonText,UseAccentColor)
         {
-
+            Shown += (s, e) =>
+            {
+                _maskedTextBox.Focus();
+            };
         }
 
         protected override int AddDialogControls(Point Location, int maxWidth)

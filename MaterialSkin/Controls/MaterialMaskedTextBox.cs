@@ -1726,6 +1726,15 @@
 
         }
 
+        protected override void OnGotFocus(EventArgs e)
+        {
+            base.OnGotFocus(e);
+            if (baseTextBox != null)
+            {
+                baseTextBox.Focus();
+            }
+        }
+
         #region Icon
         private static Size ResizeIcon(Image Icon)
         {
