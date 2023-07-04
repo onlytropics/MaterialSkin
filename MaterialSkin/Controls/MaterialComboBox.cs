@@ -410,7 +410,8 @@
                 this.Controls.Add(editBox);
 
                 this.SelectedValueChanged += (sender, args) => {
-                    _text = editBox.Text = base.SelectedItem.ToString();
+                    if (base.SelectedItem != null)
+                        _text = editBox.Text = base.SelectedItem.ToString();
                 };
 
                 editBox.TextChanged += (sender, args) => {
